@@ -9,4 +9,6 @@ typedef int lret;
 
 inline bool lsql_succeeded(lret r) { return r >= 0; }
 
+#define NULL 0
+
 #endif //_LSQL_H
