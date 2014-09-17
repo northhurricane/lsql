@@ -2,6 +2,7 @@
 #define _SESS_H
 
 class TASK;
+
 class SESSION
 {
 public :
