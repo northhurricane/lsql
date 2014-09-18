@@ -28,6 +28,10 @@ int lsqld_main(int argc, char *argv[])
 //reading run-time variable from cmd-line and option file
 lret LSQLD::initialize(int argc, char *argv[])
 {
+  instance = new LSQLD();
+  //set default
+  instance->port = 5966;
+
   return LSQL_SUCCESS;
 }
 
@@ -65,12 +69,15 @@ static void lsqld_init_net()
     goto error;
   }
 
+  lsqld->enet = enet;
+  lsqld->socket = socket;
+
   return ;
 error:
-  //  if (socket != NULL)
-  //    enet_socket_destroy(socket);
-  //  if (enet != NULL)
-  //    enet_destroy(enet);
+  if (socket != NULL)
+    enet_socket_destroy(socket);
+  if (enet != NULL)
+    enet_destroy(enet);
 
   lexit(1);
 }
