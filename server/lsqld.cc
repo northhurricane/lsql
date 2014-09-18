@@ -1,7 +1,8 @@
-#include "lsql.h"
 #include "lsqld.h"
 #include "task.h"
 #include "enet.h"
+#include "conn.h"
+#include "lthrd.h"
 
 static void lsqld_start_task_worker_thrds();
 static void lsqld_init_net();
@@ -13,7 +14,7 @@ static void lsqld_deal_net_event();
 //understanding this program better
 int lsqld_main(int argc, char *argv[])
 {
-  LSQLD.initialize(argc, argv);
+  LSQLD::initialize(argc, argv);
 
   lsqld_start_task_worker_thrds();
 
@@ -30,9 +31,11 @@ lret LSQLD::initialize(int argc, char *argv[])
   return LSQL_SUCCESS;
 }
 
+LSQLD *LSQLD::instance = NULL;
+
 static void lsqld_init_net()
 {
-  LSQLD lsqld = LSQLD.get_instance(); 
+  LSQLD *lsqld = LSQLD::get_instance(); 
   short port = lsqld->port;
 
   int r;
@@ -42,7 +45,7 @@ static void lsqld_init_net()
   if (r == -1)
   {
     lerror("failed to create socket");
-    exit(1);
+    lexit(1);
   }
 
   enet_t enet = NULL;
@@ -53,7 +56,9 @@ static void lsqld_init_net()
     goto error;
   }
 
-  r = enet_add_socket(enet, socket);
+  struct enet_event event;
+  event.data.ptr = socket;
+  r = enet_add_socket(enet, socket, &event);
   if (r == -1)
   {
     lerror("failed to add sockedt");
@@ -62,21 +67,26 @@ static void lsqld_init_net()
 
   return ;
 error:
-  if (socket != NULL)
-    enet_socket_destroy(socket);
-  if (enet != NULL)
-    enet_destroy(enet);
+  //  if (socket != NULL)
+  //    enet_socket_destroy(socket);
+  //  if (enet != NULL)
+  //    enet_destroy(enet);
 
-  exit(1);
+  lexit(1);
 }
+
+static void lsqld_deal_connection(enet_socket_t socket);
+static void lsqld_deal_request(void *socket_data);
 
 static void lsqld_deal_net_event()
 {
 #define MAXEVENTS 10
   struct enet_event events[MAXEVENTS];
-  enet_socket_t socket = LSQLD->get_instance()->socket;
+  LSQLD *lsqld = LSQLD::get_instance();
+  enet_t enet = lsqld->enet;
+  enet_socket_t socket = lsqld->socket;
 
-  int r2;
+  int r;
   while (true)
   {
     r = enet_wait(enet, events, MAXEVENTS, -1);
@@ -99,32 +109,34 @@ static void lsqld_deal_net_event()
 static void lsqld_deal_connection(enet_socket_t socket)
 {
   int r;
-  enet_socket_t acpt_socket;
-
-  r = enet_socket_accept(socket, &acpt_socket);
-  r = enet_add_socket(enet, acpt_socket);
-
-  TASK *task = TASK->alloc();
+  LSQLD *lsqld = LSQLD::get_instance();
+  enet_t enet = lsqld->enet;
+  enet_socket_t accept_socket;
   struct enet_event event;
-  event.data.ptr = &task->connection;
-  task_connection_build(task, socket, &event);
-  TASK->enqueue(task);
+
+  r = enet_socket_accept(socket, &accept_socket);
+
+  TASK *task = TASK::alloc();
+  CONNECTION *connection = CONNECTION::alloc();
+
+  event.data.ptr = connection;
+  connection->socket = accept_socket;
+
+  r = enet_add_socket(enet, accept_socket, &event);
+  task->type = TASK_CONNECTION;
+  task->connection = connection;
+
+  TASK::enqueue(task);
 }
 
 static void lsqld_deal_request(void *socket_data)
 {
   CONNECTION *connection = (CONNECTION*)socket_data;
-  SESSION *session = connection->session;
-  TASK *task = connection->task;
-}
+  TASK *task = TASK::alloc();
 
-static void lsqld_start_task_worker_thrds()
-{
-}
+  task->type = TASK_REQUEST;
 
-TASK *lsqld_fetch_task()
-{
-  return NULL;
+  TASK::enqueue(task);
 }
 
 void *lsqld_task_worker_thrd(void *arg)
@@ -132,6 +144,18 @@ void *lsqld_task_worker_thrd(void *arg)
   while (true)
   {
     //fetch a task
+    TASK *task = TASK::dequeue();
+    task_execute(task);
+    TASK::free(task);
+  }
+}
+
+static void lsqld_start_task_worker_thrds()
+{
+  uint32_t worker_number = LSQLD::get_instance()->task_worker_number;
+  for (uint32_t i = 0; i < worker_number; i++)
+  {
+    lthrd_create(lsqld_task_worker_thrd, NULL);
   }
 }
 
