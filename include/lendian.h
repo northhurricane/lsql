@@ -3,34 +3,34 @@
 
 #include <stdint.h>
 
-inline uint8_t le_read_uint8(void *s)
+inline uint8_t lendian_read_uint8(void *source)
 {
-  return *((uint8_t*)s);
+  return *((uint8_t*)source);
 }
 
-inline void le_write_uint8(void *d, uint8_t v)
+inline void lendian_write_uint8(void *target, uint8_t value)
 {
-  *((uint8_t*)d) = v;
+  *((uint8_t*)target) = value;
 }
 
-inline uint16_t le_read_uint16(void *s)
+inline uint16_t lendian_read_uint16(void *source)
 {
-  return *((uint16_t*)s);
+  return *((uint16_t*)source);
 }
 
-inline void le_write_uint16(void *d, uint16_t v)
+inline void lendian_write_uint16(void *target, uint16_t value)
 {
-  *(uint16_t*)d) = v;
+  *(uint16_t*)target) = value;
 }
 
-inline uint32_t le_read_uint32(void *s)
+inline uint32_t lendian_read_uint32(void *source)
 {
-  return *((uint32_t*)s);
+  return *((uint32_t*)source);
 }
 
-inline void le_write_uint32(void *d, uint32_t v)
+inline void lendian_write_uint32(void *target, uint32_t value)
 {
-  *((uint32_t*)d) = v;
+  *((uint32_t*)target) = value;
 }
 
 #endif //_LENDIAN_H

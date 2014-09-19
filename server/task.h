@@ -10,15 +10,17 @@ class CONNECTION;
 enum TASK_TYPE
 {
   TASK_NONE = 0,
+  //net operation
   TASK_CONNECTION,  //connection
   TASK_REQUEST,     //message request from client
   TASK_RESPONSE,    //message response to client
+
 };
 
 class TASK
 {
 public :
-  static TASK *alloc();
+  static TASK *allocate();
   static void free(TASK *task);
   static void enqueue(TASK *task);
   static TASK *dequeue();

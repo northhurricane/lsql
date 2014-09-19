@@ -16,6 +16,13 @@ inline void lerror(const char *emsg) {}
 
 inline void lexit(int i) { exit(i); }
 
+inline void lassert(bool b)
+{
+  assert(b);
+}
+
+#define LEND 0
+
 #ifndef NULL
 #define NULL 0
 #endif
