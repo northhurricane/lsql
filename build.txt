@@ -1,0 +1,6 @@
+cd ~/lsql/build
+
+g++ -g -I ../include -I ../server -I ../externs ../externs/libenet.so
+-lpthread ../server/main.cc ../server/task.cc ../server/lsqld.cc -o lsqld
+
+
