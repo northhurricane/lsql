@@ -36,7 +36,7 @@ int thread_create(thread_function func, void *para, thread_t *thread)
   pthread_attr_destroy (&attr);
 
   if (r == 0)
-    return THREAD_CREATE_SUCCEEDED;
+    return THREAD_SUCCESS;
 
-  return THREAD_CREATE_FAILED;
+  return THREAD_ERROR;
 }
