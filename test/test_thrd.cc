@@ -1,5 +1,4 @@
-#include "lsql.h"
-#include "lthrd.h"
+#include "thread.h"
 
 #include <iostream>
 
@@ -13,7 +12,7 @@ void *thrd_show_time(void *arg)
   for (int i = 0; i < 10 ; i++)
   {
     cout << "thread " << id << ":" << i << " wake up" << endl;
-    lthrd_sleep(1);
+    thread_sleep(100);
   }
 
   return 0;
@@ -22,15 +21,16 @@ void *thrd_show_time(void *arg)
 int main()
 {
   int ids[10];
+  thread_t threads[10];
 
   for (int i = 0; i < sizeof(ids) / sizeof(int); i++)
   {
     ids[i] = i;
-    lthrd_create(thrd_show_time, ids + i);
+    thread_create(thrd_show_time, ids + i, threads + i);
     cout << "thread " << i << "created" << endl;
   }
 
-  lthrd_sleep(100);
+  thread_sleep(10000);
 
   return 0;
 }

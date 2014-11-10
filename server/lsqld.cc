@@ -106,8 +106,21 @@ static void lsqld_deal_net_event()
       }
       else
       {
-        //request from client
-        lsqld_deal_request(events[i].data.ptr);
+        CONNECTION *connection = (CONNECTION*)events[i].data.ptr;
+
+        //接收消息
+        lsqld_recieve_message(connection);
+
+        //判断客户端端口状态
+        if (!connection->is_valid())
+        {
+          //连接不再有效，关闭端口
+        }
+        else
+        {
+          //处理客户端发送的请求
+          lsqld_deal_request(events[i].data.ptr);
+        }
       }
     }
   }
@@ -136,9 +149,13 @@ static void lsqld_deal_connection(enet_socket_t socket)
   TASK::enqueue(task);
 }
 
-static void lsqld_deal_request(void *socket_data)
+static void lsqld_recieve_message(CONNECTION connection)
 {
-  CONNECTION *connection = (CONNECTION*)socket_data;
+
+}
+
+static void lsqld_deal_request(CONNECTION *connection)
+{
   TASK *task = TASK::alloc();
 
   task->type = TASK_REQUEST;

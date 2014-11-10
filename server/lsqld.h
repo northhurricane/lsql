@@ -15,11 +15,16 @@ public :
   static LSQLD *get_instance() {return instance;}
 
   //public member
-public :
+private :
   short port;    //port
-  enet_t enet;   //socket of server
+  enet_t enet;   //enet of server
   enet_socket_t socket; //listenning socket
   uint32_t task_worker_number;  //worker thread number
+
+public :
+  uint32_t set_task_worker_number(uint32_t number)
+  {task_worker_number = number;}
+
 
   //private member
 private :
