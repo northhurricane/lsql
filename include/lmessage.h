@@ -17,7 +17,7 @@
 
 inline uint32_t lmessage_read_length(uint8_t *message)
 {
-  return lendian_read_uint32(message + LMSG_LEN);
+  return lendian_read_uint32(message + LMESSAGE_LENGTH);
 }
 
 inline void lmessage_write_length(uint8_t *message, uint32_t length)
@@ -35,24 +35,19 @@ inline void lmessage_write_command(uint8_t *message, uint16_t command)
   lendian_write_uint16(message, command);
 }
 
-class CONNECTION;
+class Connection;
 
 #define LMESSAGE_BUFFER_SIZE 1024
-class MESSAGE
+class Message
 {
-public :
-  static MESSAGE *allocate() { return NULL;}
-  static void free(MESSAGE *message) {}
-
 public :
   uint32_t total_length;  //total message length include message head
   uint32_t body_length;   //only message length
   uint8_t head[LMESSAGE_HEAD_SIZE];
   uint8_t buffer_fast[LMESSAGE_BUFFER_SIZE];
   uint8_t *buffer;
-  CONNECTION *connection;
 
-  lret begin(CONNECTION connection)
+  /*  lret begin(CONNECTION connection)
   {
     this->connection = connection;
     int r = enet_socket_read(connection->socket, head, sizeof(head), 0);
@@ -80,7 +75,7 @@ public :
   int read(uint8_t *buffer, uint32_t size)
   {
     return enet_socket_read(connection->socket, buffer, size, 0);
-  }
+    }*/
 };
 
 #endif //_LMESSAGE_H

@@ -4,12 +4,22 @@
 
 using namespace std;
 
-static void task_process_connection(TASK *task)
+lret TaskManager::Initialize()
+{
+  return LSQL_SUCCESS;
+}
+
+lret TaskManager::Deinitialize()
+{
+  return LSQL_SUCCESS;
+}
+
+static void task_process_connection(Task *task)
 {
   //alloc session object
 }
-
-static lret task_send_execute_result(SESSION *session)
+/*
+static lret task_send_execute_result(Session *session)
 {
   CONNECTION *connection = session->connection;
   enet_socket_send(connection->socket, "done", 4, 0);
@@ -83,22 +93,5 @@ void task_execute(TASK *task)
     break;
   }
   
-}
+  }*/
 
-TASK *TASK::alloc()
-{
-  return NULL;
-}
-
-void TASK::free(TASK *task)
-{
-}
-
-TASK *TASK::dequeue()
-{
-  return NULL;
-}
-
-void TASK::enqueue(TASK *task)
-{
-}

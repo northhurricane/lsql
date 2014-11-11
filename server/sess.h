@@ -1,12 +1,12 @@
 #ifndef _SESS_H
 #define _SESS_H
 
-class TASK;
+class Connection;
 
-class SESSION
+class Session
 {
 public :
-  TASK *task;
+  Connection *connection;
 };
 
 #endif //_SESS_H

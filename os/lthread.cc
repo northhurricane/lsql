@@ -1,9 +1,9 @@
-#include "thread.h"
+#include "lthread.h"
 #include <sched.h>
 
 using namespace std;
 
-void thread_sleep(uint32_t ms)
+void lthread_sleep(uint32_t ms)
 {
   int r;
 
@@ -25,7 +25,7 @@ void thread_sleep(uint32_t ms)
   // }
 }
 
-int thread_create(thread_function func, void *para, thread_t *thread)
+int lthread_create(lthread_function_t func, void *para, lthread_t *thread)
 {
   pthread_attr_t attr;
   pthread_attr_init (&attr);

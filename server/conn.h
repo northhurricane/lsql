@@ -5,18 +5,13 @@
 #include "lsql.h"
 #include "lmessage.h"
 
-class SESSION;
+class Session;
 
-class CONNECTION
+class Connection
 {
 public :
-  static CONNECTION *allocate() {}
-  static void free(CONNECTION *connection){}
-
-public :
-  SESSION *session;
+  Session *session;
   enet_socket_t socket;
-  lmessage_t message;
 };
 
 

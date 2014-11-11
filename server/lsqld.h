@@ -9,26 +9,23 @@ int lsqld_main(int argc, char *argv[]);
 //record lsqld global variables
 class LSQLD
 {
-  //public function
 public :
-  static lret initialize(int argc, char *argv[]);
-  static LSQLD *get_instance() {return instance;}
+  static LSQLD *GetInstance() {return instance_;}
+  lret InitializeArguements(int argc, char *argv[]);
 
-  //public member
 private :
-  short port;    //port
-  enet_t enet;   //enet of server
-  enet_socket_t socket; //listenning socket
-  uint32_t task_worker_number;  //worker thread number
+  enet_t enet_;   //enet of server
+  enet_socket_t socket_; //listenning socket
 
 public :
-  uint32_t set_task_worker_number(uint32_t number)
-  {task_worker_number = number;}
+  enet_t enet() {return enet_;}
+  void set_enet(enet_t enet) {enet_ = enet;}
+  enet_socket_t socket() { return socket_; }
+  void set_socket(enet_socket_t socket) {socket_ = socket;}
 
-
-  //private member
 private :
-  static LSQLD *instance;
+  static LSQLD *instance_;
+  static LSQLD *Constructor();
 };
 
 #endif //_LSQLD_H

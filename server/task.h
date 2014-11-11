@@ -1,43 +1,52 @@
-#ifndef _TASK_H
-#define _TASK_H
+#ifndef LSQL_SERVER_TASK_H_
+#define LSQL_SERVER_TASK_H_
 
-#include "conn.h"
-#include "lsem.h"
+#include <list>
+#include "lsql.h"
 #include "lmutex.h"
+#include "lsemaphore.h"
 
-class CONNECTION;
+using namespace std;
 
-enum TASK_TYPE
+class Session;
+
+enum TaskType_e
 {
-  TASK_NONE = 0,
-  //net operation
-  TASK_CONNECTION,  //connection
-  TASK_REQUEST,     //message request from client
-  TASK_RESPONSE,    //message response to client
-
+  TASK_NONE = 0
 };
 
-class TASK
+class Task
 {
 public :
-  static TASK *allocate();
-  static void free(TASK *task);
-  static void enqueue(TASK *task);
-  static TASK *dequeue();
-
-public :
-  bool       canceled;  //set this flag to cancel all the work
-  TASK_TYPE  type;
-  void       *task_content;
-  CONNECTION *connection;  //the connection belong to
-
-private:
-  static lsem_t  task_queue_sem;    //for 
-  static lmutex_t task_queue_mutex; 
-  
+  TaskType_e type;
+  void       *content;
+  Session    *session;
 };
 
-void task_execute(TASK *task);
+//使用静态变量是因为task的分配/回收和进栈/出栈调用可能比较频繁
+class TaskManager
+{
+private :
+  static int32_t task_number_;
+  static lmutex_t mutex_;
+  static lsemaphore_t semaphore_;  //queue semaphore
+  static list<Task*> queue_;
+  static list<Task*> free_tasks_;
+  static list<Task*> running_tasks_;
+  static bool initialized_;
 
-#endif //_TASK_Hb
+public :
+  static lret Initialize();
+  static lret Deinitialize();
+
+  static Task *Allocate();
+  static void Free(Task *task);
+
+  static void Enqueue(Task *task);
+  static Task* Dequeue();
+};
+
+void task_execute(Task *task);
+
+#endif //LSQL_SERVER_TASK_H_
 

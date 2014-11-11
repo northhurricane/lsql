@@ -20,7 +20,7 @@ inline uint16_t lendian_read_uint16(void *source)
 
 inline void lendian_write_uint16(void *target, uint16_t value)
 {
-  *(uint16_t*)target) = value;
+  *((uint16_t*)target) = value;
 }
 
 inline uint32_t lendian_read_uint32(void *source)
