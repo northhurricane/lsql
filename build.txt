@@ -1,4 +1,4 @@
 cd ~/lsql/build
 
 
-g++ -g -I ../include -I ../server -I ../externs ../externs/libenet.so -lpthread ../server/main.cc ../server/task.cc ../server/lsqld.cc ../server/lsqld_main.cc ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc -o lsqld
+g++ -g -I ../include -I ../server -I ../externs ../externs/libenet.so -lpthread ../server/main.cc ../server/task.cc ../server/lsqld.cc ../server/lsqld_main.cc ../server/lsqld_thread.cc ../server/conn.cc  ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc -o lsqld

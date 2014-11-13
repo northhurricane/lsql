@@ -10,6 +10,7 @@ bool TaskManager::initialized_ = false;
 Thread* TaskManager::threads_ = NULL;
 lmutex_t TaskManager::mutex_;
 lsemaphore_t TaskManager::semaphore_;
+list<Task*> TaskManager::queue_;
 
 lret TaskManager::Initialize()
 {
@@ -17,6 +18,8 @@ lret TaskManager::Initialize()
 
   lmutex_init(&mutex_);
   lsemaphore_init(&semaphore_, 0);
+
+  StartProcessingThreads();
 
   return LSQL_SUCCESS;
 }
@@ -36,17 +39,22 @@ lret TaskManager::Deinitialize()
 
 Task* TaskManager::Dequeue()
 {
-  return NULL;
+  lsemaphore_wait(&semaphore_);
+  lmutex_lock(&mutex_);
+  Task *task = queue_.front();
+  queue_.pop_front();
+  lmutex_unlock(&mutex_);
+  return task;
 }
 
 lret TaskManager::StartProcessingThreads()
 {
-  uint32_t thread_number = 6;
+  uint32_t thread_number = 1;
 
   Thread* threads = BuildThreadsInfo(thread_number);
 
   for (int i = 0; i < thread_number; i++)
-    lsqld_thread_create(threads + i);
+    lret r = lsqld_thread_create(threads + i);
 
   return LSQL_SUCCESS;
 }

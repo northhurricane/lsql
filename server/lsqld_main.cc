@@ -133,9 +133,10 @@ static void lsqld_deal_connection(enet_socket_t socket)
 
   r = enet_socket_accept(socket, &accept_socket);
 
-  Connection *connection = NULL;
+  Connection *connection = new Connection();
+  ConnectionManager::Add(connection);
+  connection->set_socket(accept_socket);
   event.data.ptr = connection;
-  connection->socket = accept_socket;
 
   r = enet_add_socket(enet, accept_socket, &event);
 }
