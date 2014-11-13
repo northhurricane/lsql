@@ -15,7 +15,7 @@ using namespace std;
 class Thread
 {
 private :
-  lthread_t thread_;  //操作系统下thread的
+  lthread_t thread_;  //lsql封装的操作系统下thread标识
 
   lthread_function_t func_; //线程函数
   void *para_;  //线程参数
@@ -23,9 +23,17 @@ private :
   char thread_info_buffer_[THREAD_INFO_BUFFER_SIZE]; //该线程的初始化信息
 
 public :
-  Thread(lthread_function_t function, void *para, char *info);
+  Thread();
+  Thread(lthread_function_t function, void *para, char *thread_info);
+
   lthread_function_t func() {return func_;}
+  void set_func(lthread_function_t func) { func_ = func; }
   void *para() {return para_;}
+  void set_para(void * para) { para_ = para; }
+  const char *thread_info() {return thread_info_buffer_; }
+  void set_thread_info(const char *thread_info) {}
+  const char *op_info() { return op_info_buffer_; }
+  void set_op_info(const char *op_info) {}
   lthread_t *thread() {return &thread_;}
 };
 
@@ -66,6 +74,6 @@ public :
 };
 
 lret
-lthread_create(Thread *thread);
+lsqld_thread_create(Thread *thread);
 
 #endif //LSQL_SERVER_LSQLD_THREAD_H

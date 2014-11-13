@@ -4,11 +4,9 @@
 #include "conn.h"
 #include "lsqld_thread.h"
 
-static void lsqld_start_task_worker_thrds();
 static void lsqld_init_net();
 static void lsqld_deal_net_event();
-
-
+static void lsqld_create_shutdown_thread();
 
 //the purpose to place main function at first is that I wish beginner
 //can locate main branch as quick as possible. 
@@ -18,10 +16,11 @@ int lsqld_main(int argc, char *argv[])
 {
   LSQLD::GetInstance()->InitializeArguements(argc, argv);
 
+  //所有线程的创建依赖于ThreadManager的初始化
   ThreadManager::Initialize();
   TaskManager::Initialize();
 
-  lsqld_start_task_worker_thrds();
+  lsqld_create_shutdown_thread();
 
   lsqld_init_net();
 
@@ -30,7 +29,7 @@ int lsqld_main(int argc, char *argv[])
   TaskManager::Deinitialize();
   ThreadManager::Deinitialize();
 
-  return 0;
+  return LSQL_SUCCESS;
 }
 
 static void lsqld_init_net()
@@ -105,10 +104,10 @@ static void lsqld_deal_net_event()
         Connection *connection = (Connection*)events[i].data.ptr;
 
         //接收消息
-        //        lsqld_recieve_message(connection);
+        //lsqld_recieve_message(connection);
 
         //判断客户端端口状态
-        //        if (!connection->is_valid())
+        //if (!connection->is_valid())
         if (false)
         {
           //连接不再有效，关闭端口
@@ -116,7 +115,7 @@ static void lsqld_deal_net_event()
         else
         {
           //处理客户端发送的请求
-          //          lsqld_deal_request(events[i].data.ptr);
+          //lsqld_deal_request(events[i].data.ptr);
         }
       }
     }
@@ -141,15 +140,15 @@ static void lsqld_deal_connection(enet_socket_t socket)
   r = enet_add_socket(enet, accept_socket, &event);
 }
 
-void *lsqld_task_worker_thrd(void *arg)
+//关闭服务线程
+static void* lsqld_shutdown_thread(void *para)
 {
   while (true)
   {
-    //do work
   }
+  return NULL;
 }
 
-static void lsqld_start_task_worker_thrds()
+static void lsqld_create_shutdown_thread()
 {
 }
-

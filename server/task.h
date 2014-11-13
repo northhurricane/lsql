@@ -9,6 +9,7 @@
 using namespace std;
 
 class Session;
+class Thread;
 
 enum TaskType_e
 {
@@ -23,6 +24,7 @@ public :
   Session    *session;
 };
 
+//用于记录task相关的信息
 //使用静态变量是因为task的分配/回收和进栈/出栈调用可能比较频繁
 class TaskManager
 {
@@ -32,8 +34,8 @@ private :
   static lsemaphore_t semaphore_;  //queue semaphore
   static list<Task*> queue_;
   static list<Task*> free_tasks_;
-  static list<Task*> running_tasks_;
   static bool initialized_;
+  static Thread *threads_; //运行task的Thread对象
 
 public :
   static lret Initialize();
@@ -44,9 +46,11 @@ public :
 
   static void Enqueue(Task *task);
   static Task* Dequeue();
-};
 
-void task_execute(Task *task);
+private :
+  static Thread* BuildThreadsInfo(uint32_t number);
+  static lret StartProcessingThreads();
+};
 
 #endif //LSQL_SERVER_TASK_H_
 

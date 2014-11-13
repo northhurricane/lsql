@@ -1,5 +1,14 @@
 #include "lsqld_thread.h"
 
+Thread::Thread()
+{
+}
+
+Thread::Thread(lthread_function_t function, void *para, char *thread_info)
+{
+}
+
+
 ThreadManager* ThreadManager::instance_ = (ThreadManager*)NULL;
 
 ThreadManager::ThreadManager()
@@ -22,7 +31,7 @@ lret ThreadManager::Deinitialize()
 }
 
 lret
-lthread_create(Thread *thread)
+lsqld_thread_create(Thread *thread)
 {
   int r = lthread_create(thread->func(), thread->para(), thread->thread());
 

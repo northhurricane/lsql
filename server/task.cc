@@ -1,97 +1,77 @@
 #include "task.h"
 #include "lmessage.h"
-#include <iostream>
+#include "lsqld_thread.h"
 
 using namespace std;
 
+static void* task_processing_thread(void *para);
+
+bool TaskManager::initialized_ = false;
+Thread* TaskManager::threads_ = NULL;
+lmutex_t TaskManager::mutex_;
+lsemaphore_t TaskManager::semaphore_;
+
 lret TaskManager::Initialize()
 {
+  initialized_ = true;
+
+  lmutex_init(&mutex_);
+  lsemaphore_init(&semaphore_, 0);
+
   return LSQL_SUCCESS;
 }
 
 lret TaskManager::Deinitialize()
 {
-  return LSQL_SUCCESS;
-}
+  initialized_ = false;
 
-static void task_process_connection(Task *task)
-{
-  //alloc session object
-}
-/*
-static lret task_send_execute_result(Session *session)
-{
-  CONNECTION *connection = session->connection;
-  enet_socket_send(connection->socket, "done", 4, 0);
-}
+  if (threads_ != NULL)
+    delete threads_;
 
-static lret task_process_execute(SESSION *session, MESSAGE *message)
-{
-  r = enet_socket_recv(message->socket, message->buffer,
-                       sizeof(message->buffer_fast), 0);
-  {
-    message->buffer_fast[r] = LEND;
-    cout << message->buffer_fast << endl;
-  }
-
-  //do the real things here
-
-  task_send_execution_message(session);
+  lmutex_destroy(&mutex_);
+  lsemaphore_destroy(&semaphore_);
 
   return LSQL_SUCCESS;
 }
 
-static lret task_process_message(SESSION *session, lmessage_t *message)
+Task* TaskManager::Dequeue()
 {
-  uint16_t command = lmessage_read_command(message->head);
+  return NULL;
+}
 
-  switch (command)
-  {
-    case LCMD_EXECUTE:
-      return task_process_execute(session, message);
-      break;
-  }
+lret TaskManager::StartProcessingThreads()
+{
+  uint32_t thread_number = 6;
+
+  Thread* threads = BuildThreadsInfo(thread_number);
+
+  for (int i = 0; i < thread_number; i++)
+    lsqld_thread_create(threads + i);
 
   return LSQL_SUCCESS;
 }
 
-static void task_process_request(TASK *task)
+Thread* TaskManager::BuildThreadsInfo(uint32_t number)
 {
-  CONNECTION connection = task->connection;
-  MESSAGE *message = MESSAGE::allocate();
-
-  lret r = message->begin(connection);
-
-  if (connection->message.totol_length == 0)
+  Thread *threads = new Thread[number];
+  for (int i = 0; i < number; i++)
   {
-    //client connection was close. cancel and clear all related 
-    //with this connection
+    threads[i].set_func(task_processing_thread);
+    threads[i].set_para(threads + i);
   }
 
-  //process message
-  r = task_process_message(connection->session, message);
-  r = message.end();
-  MESSAGE::free(message);
+  return threads;
 }
 
-static void task_process_response(TASK *task)
+static void* task_processing_thread(void *para)
 {
-}
+  Thread *thread = (Thread*)para;
 
-void task_execute(TASK *task)
-{
-  switch (task->type)
+  while (true)
   {
-  case TASK_CONNECTION:
-    task_process_connection(task);
-    break;
-  case TASK_REQUEST:
-    task_process_request(task);
-    break;
-  case  TASK_RESPONSE:
-    task_process_response(task);
-    break;
+    Task *task = TaskManager::Dequeue();
   }
-  
-  }*/
+
+  return NULL;
+}
 
