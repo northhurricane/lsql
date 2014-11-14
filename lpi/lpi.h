@@ -1,11 +1,12 @@
-#ifndef _LPI_H
-#define _LPI_H
+#ifndef LSQL_LPI_H_
+#define LSQL_LPI_H_
 
 /*
   LPI interface defination reference ODBC/OCI/DM DPI, but it mainly follow ODBC style. I think it is easier to understand (at least for me :P).
 */
 
 #include <stdint.h>
+#include <lpidef.h>
 
 #ifdef __WINDOWS__
 #define DllImport   __declspec( dllimport )
@@ -20,6 +21,7 @@ typedef void *lpi_handle_t;
 typedef void *lpi_henv_t;
 typedef void *lpi_hdbc_t;
 typedef void *lpi_hstmt_t;
+typedef void *lpi_hdesc_t;
 
 #define LPI_SUCCESS                0
 #define LPI_SUCCESS_WITH_INFO      1
@@ -43,6 +45,18 @@ lpi_allocate_handle(int16_t handle_type, lpi_handle_t input_handel,
                   lpi_handle_t *output_handle);
 
 DllExport lpi_return_t
+lpi_alloc_env(lpi_henv_t* env);
+
+DllExport lpi_return_t
+lpi_alloc_dbc(lpi_henv_t env, lpi_hdbc_t *dbc);
+
+DllExport lpi_return_t
+lpi_alloc_dbc(lpi_hdbc_t dbc, lpi_hstmt_t *stmt);
+
+DllExport lpi_return_t
+lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length);
+
+DllExport lpi_return_t
 lpi_connect(lpi_hdbc_t connectino_handle,
             uint8_t *server, uint32_t server_length,
             uint8_t *user_name, uint32_t user_name_length,
@@ -58,4 +72,4 @@ lpi_execute_direct(lpi_hstmt_t statement_handle,
 }                                    /* End of extern "C" { */
 #endif  /* __cplusplus */
 
-#endif //_LPI_H
+#endif //LSQL_LPI_H_

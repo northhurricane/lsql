@@ -21,7 +21,7 @@
 //logic content:具体类型下的详细内容，如登录验证需要将用户名/密码等信息放在该部分
 
 #define LMSG_TRANSFER_HEAD_SIZE 32
-#define LMSG_LOGIC_HEAD_SIZE 128
+#define LMSG_LOGIC_HEAD_SIZE 32
 #define LMSG_HEAD_SIZE (LMSG_TRANSFER_HEAD_SIZE + LMSG_LOGIC_HEAD_SIZE)
 
 #define LMSG_TRANSFER_HEAD      0
@@ -32,34 +32,45 @@
 #define LMSG_LOGIC_TYPE      LMSG_LOGIC_HEAD
 #define LMSG_LOGIC_END       (LMSG_LOGIC_TYPE + sizeof(uint16_t))
 
-//execute command
-#define LMSG_LOGIC_LOGIN 1
-#define LMSG_LOGIC_EXECUTION 2
-#define LMSG_LOGIC_PREPARE 3
+//logic id
+#define LMSG_LOGIC_ID_LOGIN 1
+#define LMSG_LOGIC_ID_EXECUTION 2
+#define LMSG_LOGIC_ID_PREPARE 3
 
-inline uint32_t lmessage_read_length(uint8_t *message)
+/* transfer head read/write*/
+/*LENGTH*/
+inline uint32_t lmsg_transfer_read_length(uint8_t *msg)
 {
-  return lendian_read_uint32(message + LMSG_TRANSFER_LENGTH);
+  return lendian_read_uint32(msg + LMSG_TRANSFER_LENGTH);
 }
 
-inline void lmessage_write_length(uint8_t *message, uint32_t length)
+inline void lmsg_transfer_write_length(uint8_t *msg, uint32_t length)
 {
-  lendian_write_uint32(message + LMSG_TRANSFER_LENGTH, length);
+  lendian_write_uint32(msg + LMSG_TRANSFER_LENGTH, length);
 }
 
-inline uint16_t lmessage_read_command(uint8_t *message)
+/* logic head read/write*/
+/*ID 用于标识当前需要处理的逻辑*/
+inline uint16_t lmsg_read_logic_id(uint8_t *msg)
 {
-  return lendian_read_uint16(message);
+  return lendian_read_uint16(msg);
 }
 
-inline void lmessage_write_command(uint8_t *message, uint16_t command)
+inline void lmsg_write_logic_id(uint8_t *msg, uint16_t id)
 {
-  lendian_write_uint16(message, command);
+  lendian_write_uint16(msg, id);
 }
 
-class Connection;
+class Vio;
 
 #define LMSG_BUFFER_SIZE (1024 * 16)
+class MessageStream
+{
+public :
+  int32_t Read(uint32_t bytes);
+  int32_t Write(uint8_t *buffer, uint32_t size);
+};
+
 class Message
 {
 private :
@@ -102,10 +113,29 @@ public :
       transfer_length_ = 0;
       return LSQL_SUCCESS;
     }
-    transfer_length_ = lmessage_read_length(transfer_head_);
+    transfer_length_ = lmsg_transfer_read_length(transfer_head_);
     logic_length_ = transfer_length_ - LMSG_HEAD_SIZE;
   }
 
+  lret Send(Vio *vio)
+  {
+  }
 };
+
+/* LOGIN */
+#define LMSG_LOGIN_FIX_LENGTH_INFO_SIZE 128
+struct lmsg_login_struct
+{
+  uint8_t *user;
+  uint32_t user_length;
+};
+typedef struct lmsg_login_struct lmsg_login_t;
+
+lret
+lmsg_login_request_write(Message *msg, lmsg_login_t *login);
+
+lret
+lmsg_login_request_read(Message *msg, lmsg_login_t *login);
+
 
 #endif // LSQL_INCLUDE_LMESSAGE_H_

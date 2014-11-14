@@ -1,5 +1,5 @@
-#ifndef _DBC_H
-#define _DBC_H
+#ifndef LSQL_LPI_DBC_H_
+#define LSQL_LPI_DBC_H_
 
 #include "common.h"
 #include "enet.h"
@@ -13,18 +13,31 @@ class Statement;
 
 using namespace std;
 
-class Connection : public Head
+class DBConnection : public HandleHead
 {
+private :
+  uint16_t port_;
+  host_t host_;
+  user_t user_;
+  enet_socket_t socket_;
+  list<Statement*> stmt_;
+  Enviroment *env_;
+
 public :
-  uint16_t port;
-  host_t host;
-  user_t user;
-  enet_client_t client;
-  list<Statement*> statements;
-  Enviroment *enviroment;
+  uint16_t port() { return port_; }
+  void set_port(int16_t port) { port_ = port; }
+  void set_socket(enet_socket_t socket) { socket_ = socket; }
+
+public :
+  DBConnection(Enviroment *env);
+  void AddStatement(Statement *stmt);
+  void RemoveStatement(Statement *stmt);
 };
 
 lpi_return_t
-lpi_allocate_dbc(lpi_henv_t enviroment_handle, lpi_hdbc_t *dbc_handle);
+lpi_allocate_dbc(Enviroment *env, lpi_hdbc_t *dbc_handle);
 
-#endif //_DBC_H
+lpi_return_t
+lpi_set_dbc_attr(DBConnection *dbc, int32_t attr, int8_t *value, int32_t length);
+
+#endif //LSQL_LPI_DBC_H_

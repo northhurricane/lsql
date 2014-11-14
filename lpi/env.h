@@ -1,20 +1,23 @@
-#ifndef _ENV_H
-#define _ENV_H
+#ifndef LSQL_LPI_ENV_H_
+#define LSQL_LPI_ENV_H_
 
 #include "common.h"
-#include "dbc.h"
 #include <list>
 
 class Connection;
 
 using namespace std;
-class Enviroment : public Head
+
+class Enviroment : public HandleHead
 {
+private :
+  list<Connection*> connections_;
+
 public :
-  list<Connection*> connections;
+  Enviroment();
 };
 
 lpi_return_t
 lpi_allocate_env(lpi_henv_t *enviroment);
 
-#endif //_ENV_H
+#endif //LSQL_LPI_ENV_H_

@@ -3,10 +3,10 @@
 
 #include "lpi.h"
 
-class Head
+class HandleHead
 {
-public :
-  uint64_t magic;
+protected :
+  uint64_t magic_;
 };
 
 #endif //_COMMON_H
