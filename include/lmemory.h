@@ -8,7 +8,7 @@ inline void* lmalloc(size_t size, uint32_t alloc_id)
   return malloc(size);
 }
 
-void lfree(void *ptr)
+inline void lfree(void *ptr)
 {
   free(ptr);
 }

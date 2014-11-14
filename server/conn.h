@@ -1,9 +1,9 @@
 #ifndef LSQL_SERVER_CONN_H
 #define LSQL_SERVER_CONN_H
 
-#include "enet.h"
 #include "lmutex.h"
 #include "lmessage.h"
+#include "lvio.h"
 #include <list>
 
 using namespace std;
@@ -14,18 +14,18 @@ class Connection
 {
 private :
   Session *session_;
-  enet_socket_t socket_;
+  Vio *vio_;
   Message message_;
 
 public :
   Session *session() {return session_; }
   void set_session(Session *session) { session_ = session; }
-  enet_socket_t socket() {return socket_;}
-  void set_socket(enet_socket_t socket) { socket_ = socket;}
+  void set_vio(Vio *vio) { vio_ = vio; }
   const Message *message() { return &message_; }
 
   void Recieve()
   {
+    ;
   }
 };
 

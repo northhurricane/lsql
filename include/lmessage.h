@@ -5,6 +5,8 @@
 #include "lendian.h"
 #include "enet.h"
 #include "lmemory.h"
+#include "lvio.h"
+
 
 //MSG is short for MESSAGE
 //message struct
@@ -89,9 +91,9 @@ public :
       lfree(buffer_);
   }
 
-  lret Recieve(Connection *connection)
+  lret Recieve(Vio *vio)
   {
-    int r = enet_socket_recv(connection->socket(), buffer_, buffer_size_, 0);
+    int r = vio->Recieve(buffer_, buffer_size_);
 
     if (r < 0)
       return LSQL_ERROR;

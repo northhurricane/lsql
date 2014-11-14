@@ -135,7 +135,8 @@ static void lsqld_deal_connection(enet_socket_t socket)
 
   Connection *connection = new Connection();
   ConnectionManager::Add(connection);
-  connection->set_socket(accept_socket);
+  Vio *vio = new VioEnet(accept_socket);
+  connection->set_vio(vio);
   event.data.ptr = connection;
 
   r = enet_add_socket(enet, accept_socket, &event);
