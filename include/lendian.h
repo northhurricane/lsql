@@ -33,4 +33,14 @@ inline void lendian_write_uint32(void *target, uint32_t value)
   *((uint32_t*)target) = value;
 }
 
+inline uint64_t lendian_read_uint64(void *source)
+{
+  return *((uint64_t*)source);
+}
+
+inline void lendian_write_uint64(void *target, uint64_t value)
+{
+  *((uint64_t*)target) = value;
+}
+
 #endif //_LENDIAN_H

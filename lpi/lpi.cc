@@ -4,7 +4,6 @@
 #include "lpi.h"
 #include "env.h"
 #include "dbc.h"
-#include "stmt.h"
 
 extern "C" 
 DllExport lpi_return_t
@@ -30,7 +29,7 @@ lpi_allocate_handle(int16_t handle_type, lpi_handle_t input_handle,
 }
 
 extern "C" 
-lpi_return _t
+DllExport lpi_return_t
 lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length)
 {
   DBConnection *dbc2 = (DBConnection*)dbc;
@@ -38,4 +37,18 @@ lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length)
   return lpi_set_dbc_attr(dbc2, attr, value, length);
 }
 
+
+extern "C" 
+DllExport lpi_return_t
+lpi_connect(lpi_hdbc_t dbc,
+            uint8_t *server, uint32_t server_length,
+            uint8_t *user_name, uint32_t user_name_length,
+            uint8_t *pass_word, uint32_t password_length)
+{
+  DBConnection *dbc2 = (DBConnection*)dbc;
+
+  return lpi_dbc_connect(dbc2, server, server_length,
+                     user_name, user_name_length,
+                     pass_word, password_length);
+}
 

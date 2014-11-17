@@ -1,6 +1,6 @@
 #include "dbc.h"
 #include "env.h"
-#include "lmessage.h"
+#include "lmessage_login.h"
 
 DBConnection::DBConnection(Enviroment *env)
 {
@@ -31,10 +31,10 @@ lpi_set_dbc_attr(DBConnection *dbc, int32_t attr, int8_t *value, int32_t length)
 }
 
 lpi_return_t
-lpi_connect(DBConnection *dbc,
-            char *host, int32_t host_len,
-            char *user, int32_t user_len,
-            char *password, int32_t password_len)
+lpi_dbc_connect(DBConnection *dbc,
+            uint8_t *host, int32_t host_len,
+            uint8_t *user, int32_t user_len,
+            uint8_t *password, int32_t password_len)
 {
   enet_socket_t socket;
   char host_inner[256];
@@ -44,6 +44,14 @@ lpi_connect(DBConnection *dbc,
   dbc->set_socket(socket);
 
   //登录验证
+  lmessage_login_request_t request;
+  request.version = 0;
+  request.user = (uint8_t*)user;
+  request.user_length = user_len;
+  request.password = (uint8_t*)password;
+  request.password_length = password_len;
+
+  lret ret = lmessage_login_request_write(dbc->GetMessage(), &request);
 
   return LPI_SUCCESS;
 }

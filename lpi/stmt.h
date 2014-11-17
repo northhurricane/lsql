@@ -3,12 +3,12 @@
 
 #include "common.h"
 
-class Connection;
+class DBConnection;
 
 class Statement : public Head
 {
 public :
-  Connection *connection;
+  DBConnection *dbc_;
 };
 
 #endif //STMT_H

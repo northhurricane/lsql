@@ -6,10 +6,11 @@
 #include <assert.h>
 
 //function call return. 
-typedef int lret;
+typedef int32_t lret;
 
 #define LSQL_SUCCESS (0)
 #define LSQL_ERROR   (-1)
+#define LSQL_WARN    (1)
 
 //inline bool lsql_succeeded(lret r) { return r >= 0; }
 

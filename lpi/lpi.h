@@ -57,16 +57,16 @@ DllExport lpi_return_t
 lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length);
 
 DllExport lpi_return_t
-lpi_connect(lpi_hdbc_t connectino_handle,
+lpi_connect(lpi_hdbc_t dbc,
             uint8_t *server, uint32_t server_length,
             uint8_t *user_name, uint32_t user_name_length,
-            uint8_t *pass_word, uint32_t pass_word_length);
+            uint8_t *pass_word, uint32_t password_length);
 
-DllExport lpi_return_t lpi_disconnect(lpi_hdbc_t connectino_handle);
+DllExport lpi_return_t lpi_disconnect(lpi_hdbc_t dbc);
 
 DllExport lpi_return_t
-lpi_execute_direct(lpi_hstmt_t statement_handle,
-                 uint8_t *statement_text, uint32_t text_length);
+lpi_execute_direct(lpi_hstmt_t stmt_handle,
+                 uint8_t *text, uint32_t length);
 
 #ifdef __cplusplus
 }                                    /* End of extern "C" { */
