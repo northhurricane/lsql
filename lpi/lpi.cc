@@ -28,9 +28,26 @@ lpi_allocate_handle(int16_t handle_type, lpi_handle_t input_handle,
   }
 }
 
+extern "C"
+DllExport lpi_return_t
+lpi_alloc_env(lpi_henv_t* env)
+{
+  return lpi_allocate_handle(LPI_HANDLE_ENV, NULL, env);
+}
+
+DllExport lpi_return_t
+lpi_alloc_dbc(lpi_henv_t env, lpi_hdbc_t *dbc)
+{
+  return lpi_allocate_handle(LPI_HANDLE_DBC, env, dbc);
+}
+
+DllExport lpi_return_t
+lpi_alloc_stmt(lpi_hdbc_t dbc, lpi_hstmt_t *stmt);
+
+
 extern "C" 
 DllExport lpi_return_t
-lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length)
+lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, lpi_pointer_t value, int32_t length)
 {
   DBConnection *dbc2 = (DBConnection*)dbc;
 
@@ -41,14 +58,14 @@ lpi_set_dbc_attr(lpi_hdbc_t dbc, int32_t attr, int8_t *value, int32_t length)
 extern "C" 
 DllExport lpi_return_t
 lpi_connect(lpi_hdbc_t dbc,
-            uint8_t *server, uint32_t server_length,
-            uint8_t *user_name, uint32_t user_name_length,
-            uint8_t *pass_word, uint32_t password_length)
+            lpi_char_t *server, int32_t server_length,
+            lpi_char_t *user_name, int32_t user_name_length,
+            lpi_char_t *password, int32_t password_length)
 {
   DBConnection *dbc2 = (DBConnection*)dbc;
 
   return lpi_dbc_connect(dbc2, server, server_length,
                      user_name, user_name_length,
-                     pass_word, password_length);
+                     password, password_length);
 }
 

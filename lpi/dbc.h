@@ -4,6 +4,7 @@
 #include "common.h"
 #include "enet.h"
 #include "lmessage.h"
+#include "lpi.h"
 #include <list>
 
 typedef char host_t[256];
@@ -21,7 +22,6 @@ private :
   uint16_t port_;
   host_t host_;
   user_t user_;
-  enet_socket_t socket_;
   list<Statement*> stmt_;
   Enviroment *env_;
   Vio *vio_;
@@ -29,8 +29,9 @@ private :
 
 public :
   uint16_t port() { return port_; }
-  void set_port(int16_t port) { port_ = port; }
-  void set_socket(enet_socket_t socket) { socket_ = socket; }
+  void set_port(uint16_t port) { port_ = port; }
+  Vio *vio() { return vio_; }
+  void set_vio(Vio *vio) { vio_ = vio; }
 
 public :
   DBConnection(Enviroment *env);
@@ -52,6 +53,6 @@ lpi_dbc_connect(DBConnection *dbc,
             uint8_t *password, int32_t password_len);
 
 lpi_return_t
-lpi_set_dbc_attr(DBConnection *dbc, int32_t attr, int8_t *value, int32_t length);
+lpi_set_dbc_attr(DBConnection *dbc, int32_t attr, lpi_pointer_t value, int32_t length);
 
 #endif //LSQL_LPI_DBC_H_

@@ -1,14 +1,24 @@
-#ifndef _STMT_H
-#define _STMT_H
+#ifndef LSQL_LPI_STMT_H_
+#define LSQL_LPI_STMT_H_
 
 #include "common.h"
 
 class DBConnection;
 
-class Statement : public Head
+class Statement : public HandleHead
 {
-public :
+private :
   DBConnection *dbc_;
+
+public :
+  Statement(DBConnection *dbc);
 };
 
-#endif //STMT_H
+lpi_return_t
+lpi_allocate_stmt(DBConnection *dbc, lpi_hstmt_t *stmt);
+
+lpi_return_t
+lpi_execute_direct(Statement *stmt,
+                   uint8_t *text, uint32_t length);
+
+#endif //LSQL_LPI_STMT_H_
