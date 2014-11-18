@@ -23,9 +23,21 @@ public :
   void set_vio(Vio *vio) { vio_ = vio; }
   const Message *message() { return &message_; }
 
+  void Close()
+  {
+  }
+
   void Recieve()
   {
-    ;
+  }
+
+  void Send()
+  {
+  }
+
+  bool Valid()
+  {
+    return true;
   }
 };
 

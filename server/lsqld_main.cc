@@ -78,7 +78,7 @@ error:
 }
 
 static void lsqld_deal_connection(enet_socket_t socket);
-static void lsqld_deal_request(void *socket_data);
+static void lsqld_deal_message(Connection *connection);
 
 static void lsqld_deal_net_event()
 {
@@ -104,18 +104,18 @@ static void lsqld_deal_net_event()
         Connection *connection = (Connection*)events[i].data.ptr;
 
         //接收消息
-        //lsqld_recieve_message(connection);
+        connection->Recieve();
 
         //判断客户端端口状态
-        //if (!connection->is_valid())
-        if (false)
+        if (!connection->Valid())
         {
           //连接不再有效，关闭端口
+          delete connection;
         }
         else
         {
           //处理客户端发送的请求
-          //lsqld_deal_request(events[i].data.ptr);
+          lsqld_deal_message(connection);
         }
       }
     }
@@ -140,6 +140,15 @@ static void lsqld_deal_connection(enet_socket_t socket)
   event.data.ptr = connection;
 
   r = enet_add_socket(enet, accept_socket, &event);
+}
+
+static void lsqld_deal_message(Connection *connection)
+{
+  task_t *task = TaskManager::Allocate();
+  task->session = connection->session();
+  task->type = TASK_PROCESS_MESSAGE;
+  task->content = connection;
+  TaskManager::Enqueue(task);
 }
 
 //关闭服务线程
