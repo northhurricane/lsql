@@ -1,0 +1,6 @@
+#ifndef _LSQL_ENGINES_LDB_LDB_H
+#define _LSQL_ENGINES_LDB_LDB_H
+
+
+
+#endif //_LSQL_ENGINES_LDB_LDB_H
