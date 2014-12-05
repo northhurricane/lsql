@@ -148,7 +148,7 @@ public :
     lendian_write_uint16(logic_head_ + LMSG_LOGIC_ID, id);
   }
 
-  uint16_t WriteLogicId()
+  uint16_t ReadLogicId()
   {
     return lendian_read_uint16(logic_head_ + LMSG_LOGIC_ID);
   }

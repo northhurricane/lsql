@@ -97,6 +97,11 @@ static void* task_processing_thread(void *para)
   {
     task_t *task = TaskManager::Dequeue();
     cout << "task gotten";
+
+    //判断是否是退出指令
+
+    //执行任务
+    task_process(task);
   }
 
   return NULL;

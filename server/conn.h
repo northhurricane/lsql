@@ -21,7 +21,7 @@ public :
   Session *session() {return session_; }
   void set_session(Session *session) { session_ = session; }
   void set_vio(Vio *vio) { vio_ = vio; }
-  const Message *message() { return &message_; }
+  Message *message() { return &message_; }
 
   void Close()
   {

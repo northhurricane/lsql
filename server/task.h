@@ -55,5 +55,9 @@ private :
   static lret StartProcessingThreads();
 };
 
+void
+task_process(const task_t *task);
+
+
 #endif //LSQL_SERVER_TASK_H_
 
