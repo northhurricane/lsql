@@ -1,22 +1,35 @@
 #include "task.h"
 #include "conn.h"
+#include "sess.h"
+#include "lmessage_login.h"
+#include "lmessage_prepare.h"
+#include "sql_process.h"
 
-/*
-
-*/
 static void
-task_process_login()
+task_authenticate(lmessage_login_request_t *request)
 {
 }
 
 static void
-task_process_execution()
+task_process_login(Connection *connection, Message *message)
+{
+  lmessage_login_request_t login_request;
+  lmessage_login_request_read(message, &login_request);
+  task_authenticate(&login_request);
+  Session *session = SessionManager::CreateSession(connection);
+}
+
+static void
+task_process_execution(Session *session, Message *message)
 {
 }
 
 static void
-task_process_prepare()
+task_process_prepare(Session *session, Message *message)
 {
+  lmessage_prepare_request_t request;
+  lmessage_prepare_request_read(message, &request);
+  sql_process_prepare(request.sql_text, request.length);
 }
 
 void
@@ -27,13 +40,13 @@ task_process_message(Connection *conn)
   switch (logicId)
   {
   case LMSG_LOGIC_ID_LOGIN:
-    return task_process_login();
+    return task_process_login(conn, message);
 
   case LMSG_LOGIC_ID_EXECUTION:
-    return task_process_execution();
+    return task_process_execution(conn->session(), message);
 
   case LMSG_LOGIC_ID_PREPARE:
-    return task_process_prepare();
+    return task_process_prepare(conn->session(), message);
   }
 }
 
@@ -52,9 +65,6 @@ task_process(const task_t *task)
         return ;
       }
       //process message
-
-      //send result message
-      conn->Send();
     }
 
 }
