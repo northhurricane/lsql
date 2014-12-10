@@ -29,7 +29,7 @@ task_process_prepare(Session *session, Message *message)
 {
   lmessage_prepare_request_t request;
   lmessage_prepare_request_read(message, &request);
-  sql_process_prepare(request.sql_text, request.length);
+  sql_process_prepare(NULL, request.sql_text, request.length);
 }
 
 void

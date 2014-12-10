@@ -1,5 +1,4 @@
 %{
-#include "lsqld.tab.h"
 #include "lsqld.lex.h"
 #include "parser.h"
 %}
@@ -7,6 +6,7 @@
 %defines "lsqld.tab.h"
 
 %define api.pure full
+%define api.value.type {parse_object_t*} //保持和parse.h中的YYSTYPE一致
 %param {yyscan_t scanner}
 
 /* identifier */
@@ -24,5 +24,14 @@
 %%
 lsqld_sql:
   dml_sql
+  {
+    return 0;
+  }
+
+dml_sql:
+IDENTIFIER {}
+
 %%
+
+
 
