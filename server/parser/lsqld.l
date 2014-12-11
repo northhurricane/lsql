@@ -1,5 +1,6 @@
 %{
 #include "lsqld.tab.h"
+#include "lex.h"
 %}
 
 %option outfile="lsqld.lex.c" HEADER-FILE="lsqld.lex.h"
@@ -9,20 +10,23 @@
 digit [0-9]
 integer {digit}+
 decimal {digit}*\.{digit}+|{digit}+\.{digit}*
-scientific_notation {decimal}[eE][+-]?{integer}
+scientific {decimal}[eE][+-]?{integer}
 
 %%
 
 {integer} {
-  printf("integer:%s\n", yytext);
+  *yylval_param = lex_integer(yytext, yyleng);
+  return LT_INTEGER;
 }
 
 {decimal} {
-  printf("decimal:%s\n", yytext);
+  *yylval_param = lex_decimail(yytext, yyleng);
+  return LT_DECIMAL;
 }
 
-{scientific_notation} {
-  printf("scientific notation:%s\n", yytext);
+{scientific} {
+  *yylval_param = lex_scientific(yytext, yyleng);
+  return LT_SCIENTIFIC;
 }
 
 %%
