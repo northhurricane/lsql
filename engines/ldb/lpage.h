@@ -5,12 +5,13 @@
 
 /*
   page存储相关
- */
+*/
 
 class lsu;
 /*
   内存中的page页，和保存于磁盘的数据页对应
- */
+*/
+
 class lpage
 {
 public :

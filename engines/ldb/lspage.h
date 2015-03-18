@@ -11,18 +11,21 @@
   排序等操作，有上一层逻辑完成
 */
 
+typedef lbyte *lspage_t;
+
+#define LSPAGE_EXTRA_SIZE (16)
+
 #define LSPAGE_MAGE 0x38da5920fcbaff54
 
 #define LSPAGE_HEAD 0
 #define LSPAGE_HEAD_MAGIC LSPAGE_HEAD
-#define LSPAGE_HEAD_REC_NUM (LSPAGE_HEAD_MAGIC + LINT8_SIZE)
+#define LSPAGE_HEAD_EXTRA (LSPAGE_HEAD_MAGIC + LINT8_SIZE)
+#define LSPAGE_HEAD_REC_NUM (LSPAGE_HEAD_EXTRA + LSPAGE_EXTRA_SIZE)
 #define LSPAGE_HEAD_FREE_SPACE (LSPAGE_HEAD_REC_NUM + LINT2_SIZE)
 #define LSPAGE_HEAD_AVAIL_OFFSET (LSPAGE_HEAD_FREE_SPACE + LINT2_SIZE)
 
 /*每次增加内容必须修改*/
 #define LSPAGE_HEAD_END (LSPAGE_HEAD_AVAIL_OFFSET + LINT2_SIZE)
-
-typedef lbyte *lspage_t;
 
 
 inline void lspage_write_magic(lspage_t page, uint2_t size)
@@ -32,6 +35,14 @@ inline void lspage_write_magic(lspage_t page, uint2_t size)
 inline uint8_t lspage_read_magic(lspage_t page, uint2_t size)
 {
   return 0;
+}
+
+inline void lspage_write_extra(lspage_t page, lbyte *extra)
+{
+}
+
+inline void lspage_read_extra(lspage_t page, extra)
+{
 }
 
 inline void lspage_write_rec_num(lspage_t page, uint2_t rec_num)
