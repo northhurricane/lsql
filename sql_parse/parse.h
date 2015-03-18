@@ -25,7 +25,11 @@ typedef struct parse_create_table_struct parse_create_table_t;
 
 class AutoHeap;
 
-lret
+/*
+  success:return resut
+  fail:return NULL
+*/
+parse_heat_t*
 lsql_parse(const char *sql_str, parse_error_t *error, AutoHeap *heap);
 
 #endif //LSQL_SQL_PARSE_PARSE_H_
