@@ -36,9 +36,6 @@ typedef list<VFunction*> VFList;
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
 {
-private:
-  char flag_; /*虚拟机的调用状态*/
-  char func_flag_; /*每个*/
 };
 
 /*函数*/

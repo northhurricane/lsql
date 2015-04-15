@@ -1,0 +1,56 @@
+1、是否所有调用可以变成2叉的函数调用方式，如下例子
+select * from t1,t2
+
+sqlrun--nest_loop--cluster_scan(t1)
+                 \_cluster_scan(t2)
+
+
+各函数的结果就是row，只有sqlrun得到的是结果。对于select来说就是行集，对于delete/update/insert来说就是影响的行数
+
+2、未指定表的计划生成
+select 1;
+
+在未指定表的情况下，假设存在一个只有一行记录的表（sysdual），从该表进行记录选择
+
+create table sysdual(dummy varchar(1));insert into sysdual values (null);
+
+sqlrun--calc_field--sysdual
+
+3、带有选择列的查询
+
+create table t1(f1 int, f2 varchar(100), f3 varchar(100), f4 varchar(100));
+
+select f1,f2 from t1;
+
+sqlrun--pick_field--cluster_scan(t1);
+
+4、带有limit的查询
+select * from t1 limit 0,100
+
+sqlrun--limit--cluster_scan(t1)
+
+5、带有limit的选择列
+select f1,f2 from t1 limit 0,100
+
+sqlrun--limit--pick_field--cluster_scan(t1)
+
+6、带有过滤条件的
+6-1、无索引
+create table t1(f1 int, f2 int);
+select * from t1 where f1 = 1;
+
+sqlrun--filter--cluster_scan(t1)
+
+6-2、带有索引
+create table t1(f1 int, f2 int);
+create index idx_t1 on t1(f1);
+select * from t1 where f1 = 1;
+
+sqlrun--nest_loop--secondary_seek(idx_t1)
+                 \_cluster_seek(t1)
+
+6、连接的带有选择列的查询
+select t1.name, t2.desc from t1, t2 where t1.id = t2.id
+
+sqlrun--pick_fields--nest_loop--cluster_scan(t1)
+                              \_cluster_scan(t2)
