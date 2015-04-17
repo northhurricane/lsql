@@ -2,6 +2,7 @@
 #define LSQL_SERVER_VM_VM_H_
 
 #include <list>
+#include "column.h"
 
 /* 
 设计目标
@@ -28,10 +29,7 @@ sql的优化就变成函数的优化，这包括函数构成的优化，函数�
 
 */
 
-using namespace std;
-
-class VFunction;
-typedef list<VFunction*> VFList;
+class VProcess;
 
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
@@ -42,46 +40,51 @@ class VFScene
 class VFunction
 {
 public :
-  virtual void Run(VMachine *machine) = 0;
+  virtual void Run(VProcess *process) = 0;
 
 private:
   /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
     可将其看作C中的函数地址，C中每个函数的地址在某个确定的program中都是唯一的。*/
   uint4_t serial_; 
-  VFList sub_functions_;
-};
+  VFunction *first_;   //第一个被执行
+  VFunction *second_;  //第二个被执行
+  coldef_array_t coldefs_; //函数返回行集的元信息
+  //用于定义如何使用first_/second_的行集的信息。也就是从子函数的行集到当前函数的行集的转化。比如abs(f1), cos(f1)，f1+f2这样的计算列，或者直接将行集的某些列的数据拷贝到当前行集
 
-/*函数参数*/
-class VParameter
-{
-};
-
-/*
-  函数返回
-*/
-class VReturn
-{
+public :
+  VFunction *first() { return first_; }
+  void set_first(VFunction *first) { first_ = first; }
+  VFunction *second() { return second_; }
+  void set_second(VFunction *second) { second_ = second; }
+  uint4_t serial() { return serial_; }
+  void set_serial(uint4_t serial) { serial_ = serial; }
 };
 
 /*每条sql将被转化为一个program。每个program都由若干的function组成*/
 class VProgram
 {
+public :
+  void Run(VProcess *process);
+
   uint32_t function_amount() const {return function_amount_;}
-private:
+  void set_entrance(VFunction *entrance) { entrance_ = entrance; }
+
+private :
   uint32_t  funcion_amount_; //程序中的函数个数
   VFunction *entrance_;
 };
 
-/* VProgram运行时需要一个环境。这个环境就是VMachine。
-   在VMachine中，被调用函数获取到参数，调用函数获取返回值
-   在VMachine中，记录调用信息，完成程序执行的控制
-   通过VMachine完成编程中的一个概念，代码和数据的分离
+/* VProgram运行时需要一个环境。这个环境就是VProcess。
+   通过VProcess完成一个事情，模拟进程，具备操作系统中进程的特性。
+   从而达到代码和运行时数据的分离。VProgram对应代码，VProcess对应运行数据。
 */
-class VMachine
+class VProcess
 {
 public:
-  SetReturn(VReturn *vreturn);
-  VReturn *GetReturn();
+  void Run(); //相当于代码运行
+  void Initialize(VProgram *program); //相当于代码载入
+  void Deinitialize(); //相当于代码退出，清理环境
+  VScene *GetScene(uint4_t serial);
 
 private:
   VProgram *program_; /*虚拟机所运行的program*/
