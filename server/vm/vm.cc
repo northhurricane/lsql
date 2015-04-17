@@ -6,10 +6,26 @@ VProcess::Run()
   program_->Run(this);
 }
 
+void
+VProcess::Initialize(VProgram *program)
+{
+}
+
+void
+VProcess::Deinitialize()
+{
+}
+
+VFScene *
+VProcess::GetScene(uint32_t serial)
+{
+  return NULL;
+}
+
 
 void
 VProgram::Run(VProcess *process)
 {
-  _entrance->Run(process);
+  entrance_->Run(process);
 }
 

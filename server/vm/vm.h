@@ -34,6 +34,8 @@ class VProcess;
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
 {
+private :
+  int temp_for_delete;
 };
 
 /*函数*/
@@ -45,7 +47,7 @@ public :
 private:
   /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
     可将其看作C中的函数地址，C中每个函数的地址在某个确定的program中都是唯一的。*/
-  uint4_t serial_; 
+  uint32_t serial_; 
   VFunction *first_;   //第一个被执行
   VFunction *second_;  //第二个被执行
   coldef_array_t coldefs_; //函数返回行集的元信息
@@ -56,8 +58,8 @@ public :
   void set_first(VFunction *first) { first_ = first; }
   VFunction *second() { return second_; }
   void set_second(VFunction *second) { second_ = second; }
-  uint4_t serial() { return serial_; }
-  void set_serial(uint4_t serial) { serial_ = serial; }
+  uint32_t serial() { return serial_; }
+  void set_serial(uint32_t serial) { serial_ = serial; }
 };
 
 /*每条sql将被转化为一个program。每个program都由若干的function组成*/
@@ -66,11 +68,11 @@ class VProgram
 public :
   void Run(VProcess *process);
 
-  uint32_t function_amount() const {return function_amount_;}
+  uint32_t function_amount() {return function_amount_;}
   void set_entrance(VFunction *entrance) { entrance_ = entrance; }
 
 private :
-  uint32_t  funcion_amount_; //程序中的函数个数
+  uint32_t  function_amount_; //程序中的函数个数
   VFunction *entrance_;
 };
 
@@ -84,12 +86,12 @@ public:
   void Run(); //相当于代码运行
   void Initialize(VProgram *program); //相当于代码载入
   void Deinitialize(); //相当于代码退出，清理环境
-  VScene *GetScene(uint4_t serial);
+  VFScene *GetScene(uint32_t serial);
 
 private:
   VProgram *program_; /*虚拟机所运行的program*/
-  uint4_t scenes_amount_; /*scenes数组长度，与program的function_amount_相同*/
-  VFunctionScene **scenes_; /*一个program不会有太多function，所以使用一个指针数组为每一个function保存现场环境。通过每个function的序列号（serial_）来访问*/
+  uint32_t scenes_amount_; /*scenes数组长度，与program的function_amount_相同*/
+  VFScene **scenes_; /*一个program不会有太多function，所以使用一个指针数组为每一个function保存现场环境。通过每个function的序列号（serial_）来访问*/
 };
 
 #endif //LSQL_SERVER_VM_VM_H_

@@ -6,8 +6,8 @@
 
 class VFCalc : VFunction
 {
-private :
-  coldef_array_t columns;
+public :
+  virtual void Run(VProcess *process);
 };
 
 #endif //LSQL_SERVER_VM_VFCalc_H_

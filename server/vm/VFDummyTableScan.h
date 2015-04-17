@@ -9,7 +9,7 @@
 class VFDummyTableScan : VFunction
 {
 public :
-  
+  virtual void Run(VProcess *process);
 };
 
 #endif //LSQL_SERVER_VM_VFDummyTableScan_H_

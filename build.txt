@@ -5,3 +5,6 @@ g++ -g -I ../include -I ../message -I ../server -I ../server/parser -I ../extern
 
 g++ -g -fPIC --share -I ../include -I ../externs -I ../lpi ../externs/libenet.so ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc ../lpi/env.cc ../lpi/dbc.cc -o liblpi.so
 
+g++ -g -I ../include -I ../server/vm ../server/vm/vmtest.cc ../server/vm/vm.cc ../server/vm/VFCalc.cc ../server/vm/VFDummyTableScan.cc -o lsqlvmtest
+
+

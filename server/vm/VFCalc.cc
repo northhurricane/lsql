@@ -1,6 +1,7 @@
 #include "VFCalc.h"
 
-VFCalc::Run()
+void
+VFCalc::Run(VProcess *process)
 {
   //
 }

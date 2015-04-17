@@ -3,6 +3,6 @@
 void
 VFDummyTableScan::Run(VProcess *process)
 {
-  VScene = process->GetScene(serial());
+  VFScene *scene = process->GetScene(serial());
 }
 
