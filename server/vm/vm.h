@@ -3,6 +3,8 @@
 
 #include <list>
 #include "column.h"
+#include "row.h"
+#include "memory.h"
 
 /* 
 设计目标
@@ -34,8 +36,15 @@ class VProcess;
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
 {
-private :
-  int temp_for_delete;
+public:
+  uint16_t filled_rows() { return filled_rows_; }
+  uint16_t array_size() { return array_size_; }
+  Row *rows_array() { return rows_array_; }
+
+protected :
+  uint16_t filled_rows_; //函数执行后，填写的行的数量
+  uint16_t array_size_;  //数组长度，函数最多可填入多少行
+  Row *rows_array_;      //在函数执行时，向该数组填写行
 };
 
 /*函数*/
@@ -43,6 +52,9 @@ class VFunction
 {
 public :
   virtual void Run(VProcess *process) = 0;
+
+  //创建函数运行是所需的运行现场
+  virtual void CreateScene(VFScene **pscene, Memory *memory) = 0;
 
 private:
   /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
@@ -79,6 +91,8 @@ private :
 /* VProgram运行时需要一个环境。这个环境就是VProcess。
    通过VProcess完成一个事情，模拟进程，具备操作系统中进程的特性。
    从而达到代码和运行时数据的分离。VProgram对应代码，VProcess对应运行数据。
+
+Todo : 虚拟进程的信息可以分类，各函数的数据空间，进程的运行状态
 */
 class VProcess
 {

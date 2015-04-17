@@ -5,5 +5,9 @@
   列数据的内存对象
 */
 
+class Field
+{
+};
+
 #endif //LSQL_SQL_FIELD_H_
 

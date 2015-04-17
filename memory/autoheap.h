@@ -2,20 +2,21 @@
 #define LSQL_MEMORY_AUTOHEAP_H_
 
 #include "lsql.h"
+#include "memory.h"
 #include <list>
 
 using namespace std;
 
 class HeapBlock;
 
-class AutoHeap
+class AutoHeap : public Memory
 {
 public :
   static AutoHeap* Create();
   static AutoHeap* Create(uint4_t size);
   static void Destroy(AutoHeap *heap);
 
-  void *Allocate(uint4_t size);
+  virtual void *Allocate(uint4_t size);
 
 private :
   uint4_t total_bytes_;  //分配空间的全部字节数
