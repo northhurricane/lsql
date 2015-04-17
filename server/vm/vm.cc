@@ -1,5 +1,6 @@
 #include "vm.h"
 
+/***************VProcess*****************/
 void
 VProcess::Run()
 {
@@ -22,6 +23,7 @@ VProcess::GetScene(uint32_t serial)
   return NULL;
 }
 
+/***************VProgram*****************/
 
 void
 VProgram::Run(VProcess *process)
