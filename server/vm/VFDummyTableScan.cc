@@ -15,8 +15,6 @@ VFDummyTableScan::CreateScene(VFScene **pscene, Memory *memory)
 
   FillRow(scene);
 
-  VFScene *tmp = NULL;
-
   *pscene = scene;
 }
 

@@ -3,7 +3,7 @@
 
 #include "vm.h"
 
-class VFCalc : VFunction
+class VFCalc : public VFunction
 {
 public :
   virtual void Run(VProcess *process);

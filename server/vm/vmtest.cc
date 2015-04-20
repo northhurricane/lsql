@@ -8,8 +8,8 @@ void testSelectConst()
   VProgram program;
   VFCalc calc;
   VFDummyTableScan dummyTable;
-  //calc.set_first(&dummyTable);
-  //program.set_entrance(&calc);
+  calc.set_first(&dummyTable);
+  program.set_entrance(&calc);
 
   //虚拟进程运行
   VProcess process;

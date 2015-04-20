@@ -3,8 +3,8 @@
 
 #include <list>
 #include "column.h"
-#include "row.h"
 #include "memory.h"
+#include "vfdata.h"
 
 /* 
 设计目标
@@ -37,14 +37,10 @@ class VProcess;
 class VFScene
 {
 public:
-  uint16_t filled_rows() { return filled_rows_; }
-  uint16_t array_size() { return array_size_; }
-  Row *rows_array() { return rows_array_; }
+  VFData *data() { return data_; }
 
 protected :
-  uint16_t filled_rows_; //函数执行后，填写的行的数量
-  uint16_t array_size_;  //数组长度，函数最多可填入多少行
-  Row *rows_array_;      //在函数执行时，向该数组填写行
+  VFData  *data_;      //在函数执行时，向该数组填写行
 };
 
 /*函数*/

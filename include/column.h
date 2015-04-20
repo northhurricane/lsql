@@ -7,7 +7,9 @@
 struct coldef_struct
 {
   uint16_t type;  //SQL的类型
-  uint32_t preciion; //对char类型
+  uint16_t precision; //对char类型来说就是定义的长度
+  uint16_t scale;     //和precision配合使用，说明精度。比如decimal(10,2)，precision为10，scale为2
+  bool     nullable;  //列是否可为null
 };
 typedef struct coldef_struct coldef_t;
 
