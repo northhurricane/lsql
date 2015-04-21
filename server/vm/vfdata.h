@@ -23,12 +23,14 @@ class VFData
 public:
   static VFData *Create(uint16_t columns_amount, coldef_t *columns,
                         uint16_t row_array_size, Memory *memory);
+  static void Destroy(VFData *data);
 
 public :
   uint16_t fields_amount() { return fields_amount_; }
   uint16_t filled_rows() { return filled_rows_; }
 
 private:
+  Memory *memory_;           //分配内存的内存对象
   uint16_t fields_amount_;   //列数目
   uint16_t rows_array_size_; //可存储数据的数组长度
   uint16_t filled_rows_;     //实际数据的长度

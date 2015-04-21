@@ -1,40 +1,40 @@
 #include "autoheap.h"
 
-static const uint4_t DEFAULT_HEAP_INIT_SIZE = 512;
-static uint4_t init_size = DEFAULT_HEAP_INIT_SIZE;
+static const uint32_t DEFAULT_HEAP_INIT_SIZE = 512;
+static uint32_t init_size = DEFAULT_HEAP_INIT_SIZE;
 
 /* heap */
 /*进行内存分配的内存块*/
 class HeapBlock
 {
 public :
-  static HeapBlock *Create(uint4_t size);
+  static HeapBlock *Create(uint32_t size);
   static void Destroy(HeapBlock *block);
 
-  void* Allocate(uint4_t size);
-  HeapBlock *Next() {return next_;}
-  void Next(HeapBlock *next) { next_ = next; }
-  bool HasSpace(uint4_t size)
+  void* Allocate(uint32_t size);
+  HeapBlock *next() {return next_;}
+  void set_next(HeapBlock *next) { next_ = next; }
+  bool HasSpace(uint32_t size)
   {
-    if ((used_byte_ + size) > block_size_)
+    if ((used_bytes_ + size) > block_size_)
       return false;
     return true;
   }
 
 private :
-  uint4_t block_size_;
-  uint4_t used_bytes_;
+  uint32_t block_size_;
+  uint32_t used_bytes_;
   char *buffer_;
   HeapBlock *next_;
 
   HeapBlock();
   ~HeapBlock();
 
-  void* InitMemPool(uint4_t size);
+  void* InitMemPool(uint32_t size);
 };
 
-HeapBHeapBlock*
-HeapBlock::Create(uint4_t size)
+HeapBlock*
+HeapBlock::Create(uint32_t size)
 {
   HeapBlock *block = new HeapBlock();
   if (block == NULL)
@@ -55,12 +55,12 @@ HeapBlock::Destroy(HeapBlock *block)
 }
 
 void*
-Allocate(uint4_t size)
+HeapBlock::Allocate(uint32_t size)
 {
-  lassert((size + used_byte) <= block_size);
+  lassert((size + used_bytes_) <= block_size_);
 
-  void * mem = _buffer + used_byte_;
-  used_byte += size;
+  void * mem = buffer_ + used_bytes_;
+  used_bytes_ += size;
 
   return mem;
 }
@@ -68,9 +68,9 @@ Allocate(uint4_t size)
 HeapBlock::HeapBlock()
 {
   block_size_ = 0;
-  used_bytes+ = 0;
+  used_bytes_ = 0;
   buffer_ = NULL;
-  NEXT_ = NULL;
+  next_ = NULL;
 }
 
 HeapBlock::~HeapBlock()
@@ -79,7 +79,7 @@ HeapBlock::~HeapBlock()
 }
 
 void*
-HeapBlock::InitMemPool(uint4_t size)
+HeapBlock::InitMemPool(uint32_t size)
 {
   block_size_ = size;
 
@@ -95,14 +95,14 @@ AutoHeap::Create()
 }
 
 AutoHeap*
-AutoHeap::Create(uint4_t size)
+AutoHeap::Create(uint32_t size)
 {
   AutoHeap *heap = NULL;
   heap = new AutoHeap();
   if (heap == NULL)
     return NULL;
 
-  bool succes = heap->Initialize(size);
+  bool success = heap->Initialize(size);
   if (!success)
   {
     delete heap;
@@ -112,7 +112,7 @@ AutoHeap::Create(uint4_t size)
 }
 
 void*
-AutoHeap::Allocate(uint4_t size)
+AutoHeap::Allocate(uint32_t size)
 {
   //查看最后一个block是否有存储空间
   if (lastest_block_->HasSpace(size))
@@ -122,7 +122,7 @@ AutoHeap::Allocate(uint4_t size)
   }
 
   //查看所有block是否有空间
-  HeapBlock block = blocks_;
+  HeapBlock *block = blocks_;
   while (block != NULL)
   {
     if (block->HasSpace(size))
@@ -133,12 +133,12 @@ AutoHeap::Allocate(uint4_t size)
   }
 
   //创建新的block进行分配
-  uint4_t size_new = 0;
+  uint32_t size_new = 0;
   HeapBlock *block_new = HeapBlock::Create(size_new);
   if (block_new == NULL)
     return NULL;
 
-  lastest_block_->next = block_new;
+  lastest_block_->set_next(block_new);
   lastest_block_ = block_new;
 
   void *mem = NULL;
@@ -146,6 +146,11 @@ AutoHeap::Allocate(uint4_t size)
   used_bytes_ += size;
 
   return mem;
+}
+
+void AutoHeap::Free(void *p)
+{
+  return;
 }
 
 AutoHeap::AutoHeap()
@@ -161,15 +166,20 @@ AutoHeap::~AutoHeap()
   Deinitialize();
 }
 
-void*
-AutoHeap::Initialize(uint4_t size)
+bool
+AutoHeap::Initialize(uint32_t size)
 {
   HeapBlock *block = HeapBlock::Create(size);
   if (block == NULL)
     return false;
 
   blocks_ = block;
-  curr_block_ = block;
+  lastest_block_ = block;
 
   return true;
+}
+
+void
+AutoHeap::Deinitialize()
+{
 }

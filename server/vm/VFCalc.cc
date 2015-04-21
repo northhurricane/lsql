@@ -1,13 +1,18 @@
 #include "VFCalc.h"
 
-void
+vfreturn_t
 VFCalc::Run(VProcess *process)
 {
   //
 }
 
+VFScene*
+VFCalc::CreateScene(Memory *memory)
+{
+}
+
 void
-VFCalc::CreateScene(VFScene **pscene, Memory *memory)
+VFCalc::DestroyScene()
 {
 }
 

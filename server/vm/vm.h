@@ -33,24 +33,53 @@ sql的优化就变成函数的优化，这包括函数构成的优化，函数�
 
 class VProcess;
 
+struct vfreturn_struct
+{
+  bool error; //调用是否出错
+  bool over;  //函数是否结束。true表示函数执行结束，不再返回数据；false表示data成员变量中包含数据。
+
+  VFData *data; //返回的数据
+};
+typedef struct vfreturn_struct vfreturn_t;
+
+inline vfreturn_t over_return()
+{
+  vfreturn_t ret;
+  ret.error = false;
+  ret.over = true;
+  ret.data = NULL;
+}
+
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
 {
-public:
+public :
   VFData *data() { return data_; }
+  void set_over(bool over) { over_ = over; }
+  bool over() { return over_; }
+  void set_first_over(bool over) { first_over_ = over; }
+  void set_second_over(bool over) { second_over_ = over; }
 
 protected :
-  VFData  *data_;      //在函数执行时，向该数组填写行
+  VFData  *data_;      //在函数执行时填写数据的地方，和VF的coldef一致
+
+  bool over_;          //该函数是否取完数据。true表示所有数据都已经返回，false表示还可以继续返回数据
+  bool first_over_;    //第一函数是否结束
+  bool second_over_;   //第二函数是否结束
 };
 
 /*函数*/
 class VFunction
 {
 public :
-  virtual void Run(VProcess *process) = 0;
+  //函数运行
+  virtual vfreturn_t Run(VProcess *process) = 0;
 
-  //创建函数运行是所需的运行现场
-  virtual void CreateScene(VFScene **pscene, Memory *memory) = 0;
+  //创建函数运行时所需的运行现场，在虚拟进程的函数运行前，被调用
+  virtual VFScene *CreateScene(Memory *memory) = 0;
+
+  //销毁函数运行时所需的运行现场，在虚拟进程结束时，进行销毁
+  virtual void DestroyScene() = 0;
 
 private:
   /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
@@ -96,10 +125,12 @@ public:
   void Run(); //相当于代码运行
   void Initialize(VProgram *program); //相当于代码载入
   void Deinitialize(); //相当于代码退出，清理环境
+
   VFScene *GetScene(uint32_t serial);
 
 private:
   VProgram *program_; /*虚拟机所运行的program*/
+  Memory *memory; /*运行中所使用的内存，在进程结束后统一释放*/
   uint32_t scenes_amount_; /*scenes数组长度，与program的function_amount_相同*/
   VFScene **scenes_; /*一个program不会有太多function，所以使用一个指针数组为每一个function保存现场环境。通过每个function的序列号（serial_）来访问*/
 };

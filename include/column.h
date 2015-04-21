@@ -1,7 +1,7 @@
 #ifndef LSQL_INCLUDE_COLUMN_H_
 #define LSQL_INCLUDE_COLUMN_H_
 
-#include <stdint.h>
+#include "lsql.h"
 #include "lendian.h"
 
 struct coldef_struct
@@ -37,7 +37,7 @@ struct coldef_array_struct
 typedef struct coldef_array_struct coldef_array_t;
 
 
-typedef std::list<coldef_t> ListColdef;
+//typedef std::list<coldef_t> ListColdef;
 
 
 #endif //LSQL_INCLUDE_COLUMN_H_

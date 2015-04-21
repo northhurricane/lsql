@@ -13,24 +13,25 @@ class AutoHeap : public Memory
 {
 public :
   static AutoHeap* Create();
-  static AutoHeap* Create(uint4_t size);
+  static AutoHeap* Create(uint32_t size);
   static void Destroy(AutoHeap *heap);
 
-  virtual void *Allocate(uint4_t size);
+  virtual void *Allocate(uint32_t size);
+  virtual void Free(void *p);
 
 private :
-  uint4_t total_bytes_;  //分配空间的全部字节数
-  uint4_t used_bytes_;   //已使用的字节数
+  uint32_t total_bytes_;  //分配空间的全部字节数
+  uint32_t used_bytes_;   //已使用的字节数
 
   HeapBlock *blocks_;
-  HeapBlock *lastest_block;  //最后一次分配的block，也是blocks_链表的最后一个
+  HeapBlock *lastest_block_;  //最后一次分配的block，也是blocks_链表的最后一个
 
   AutoHeap();
   ~AutoHeap();
   /*
     return success. true is successful, false is failed
    */
-  bool Initialize(uint4_t size);
+  bool Initialize(uint32_t size);
   void Deinitialize();
 
   //for debug.

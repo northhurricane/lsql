@@ -5,6 +5,7 @@ class Memory
 {
 public :
   virtual void *Allocate(uint32_t size) = 0;
+  virtual void Free(void *p) = 0;
 };
 
 #endif //LSQL_MEMORY_MEMORY_H_

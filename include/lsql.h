@@ -18,10 +18,10 @@ inline void lerror(const char *emsg) {}
 
 inline void lexit(int i) { exit(i); }
 
-void lsql_stop()
+inline void lsql_stop()
 {
   int i = 0;
-  printf("%d", i);
+  //printf("%d", i);
 }
 
 inline void lassert(bool b)

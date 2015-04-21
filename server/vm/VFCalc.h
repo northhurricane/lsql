@@ -6,8 +6,9 @@
 class VFCalc : public VFunction
 {
 public :
-  virtual void Run(VProcess *process);
-  virtual void CreateScene(VFScene **pscene, Memory *memory);
+  virtual vfreturn_t Run(VProcess *process);
+  virtual VFScene* CreateScene(Memory *memory);
+  virtual void DestroyScene();
 };
 
 #endif //LSQL_SERVER_VM_VFCalc_H_

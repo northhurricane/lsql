@@ -2,9 +2,12 @@
 #define LSQL_SERVER_VM_VFDummyTableScan_H_
 
 #include "vm.h"
+#include "vfdata.h"
 
 class VFDummyTableScene : public VFScene
 {
+public :
+  VFDummyTableScene();
 };
 
 /*
@@ -13,11 +16,9 @@ class VFDummyTableScene : public VFScene
 class VFDummyTableScan : public VFunction
 {
 public :
-  virtual void Run(VProcess *process);
-  virtual void CreateScene(VFScene **pscene, Memory *memory);
-
-private :
-  void FillRow(VFDummyTableScene *scene);
+  virtual vfreturn_t Run(VProcess *process);
+  virtual VFScene* CreateScene(Memory *memory);
+  virtual void DestroyScene();
 };
 
 #endif //LSQL_SERVER_VM_VFDummyTableScan_H_
