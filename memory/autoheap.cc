@@ -182,4 +182,14 @@ AutoHeap::Initialize(uint32_t size)
 void
 AutoHeap::Deinitialize()
 {
+  HeapBlock *curr, *temp;
+
+  curr = blocks_;
+  while (curr != NULL)
+  {
+    temp = curr;
+    curr = curr->next();
+
+    HeapBlock::Destroy(temp);
+  }
 }
