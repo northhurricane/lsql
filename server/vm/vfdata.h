@@ -17,16 +17,17 @@ struct vffield_struct
   coldef_t coldef;  //列定义
 
   field_type_t type;    //指明data的field类型
-  uint8_t     *data;    //列数据。field_t或者field_ref_t类型
+  void        *data;    //列数据。field_t或者field_ref_t类型
   uint16_t     amount;  //data数据区中的field结构的数目
 };
 typedef struct vffield_struct vffield_t;
+#define VFFIELD_SIZE (sizeof(vffield_t[1]))
 
 class VFData
 {
 public:
-  static VFData *Create(uint16_t columns_amount, coldef_t *columns,
-                        uint16_t row_array_size, Memory *memory);
+  static VFData *Create(uint16_t columns_amount, coldef_t *coldefs,
+                        uint16_t rows_array_size, Memory *memory);
   static void Destroy(VFData *data);
 
 public :
@@ -69,7 +70,8 @@ private:
   uint16_t fields_amount_;   //列数目
   uint16_t rows_array_size_; //可存储数据的数组长度
   uint16_t filled_rows_;     //实际数据的长度
-  vffield_t **fields_;       //保存数据的存储空间
+  vffield_t *fields_;        //保存数据的存储空间
+  coldef_t  *coldefs_;       //列定义
 
   VFData();
 };

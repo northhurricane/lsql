@@ -12,6 +12,7 @@ struct coldef_struct
   bool     nullable;  //列是否可为null
 };
 typedef struct coldef_struct coldef_t;
+#define COLDEF_SIZE (sizeof(coldef_t[1]))
 
 /*
   return : > 0 bytes used in buffer .

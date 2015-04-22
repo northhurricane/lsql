@@ -10,7 +10,7 @@ typedef int16_t sqltype_t;
 #define LSQL_TYPE_INT_PREC  10
 #define LSQL_TYPE_INT_SCALE 0
 
-inline bool type_is_fix_storage_lenght(uint32_t type)
+inline bool type_is_fix_storage_lenght(sqltype_t type)
 {
   switch (type)
   {
