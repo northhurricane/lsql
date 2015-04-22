@@ -111,6 +111,12 @@ AutoHeap::Create(uint32_t size)
   return heap;
 }
 
+void
+AutoHeap::Destroy(AutoHeap *heap)
+{
+  delete heap;
+}
+
 void*
 AutoHeap::Allocate(uint32_t size)
 {

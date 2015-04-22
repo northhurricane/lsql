@@ -15,32 +15,51 @@ private:
   VFData *data_;
   AutoHeap *memory_;
 
-  void AllocData();
-  void FreeData();
+  VFData* BuildData(Memory *memory);
+  coldef_t* BuildColdef(Memory *memory);
+  void FillData(VFData *data);
 };
 
 VFDummyTableData::VFDummyTableData()
 {
-  memory_ = NULL;
-  AllocData();
+  memory_ = AutoHeap::Create();
+  data_ = BuildData(memory_);
 }
 
 VFDummyTableData::~VFDummyTableData()
 {
+  VFData::Destroy(data_);
+  AutoHeap::Destroy(memory_);
 }
 
-void
-VFDummyTableData::AllocData()
+VFData *
+VFDummyTableData::BuildData(Memory *memory)
 {
   uint16_t column_amounts = 1;
-  coldef_t *coldefs = NULL;
   uint16_t row_array_size = 1;
-  data_ = VFData::Create(column_amounts, coldefs, row_array_size, memory_);
+
+  coldef_t *coldefs = BuildColdef(memory);
+  data_ = VFData::Create(column_amounts, coldefs, row_array_size, memory);
+  FillData(data_);
+}
+
+coldef_t *
+VFDummyTableData::BuildColdef(Memory *memory)
+{
+  uint32_t size = sizeof(coldef_t[1]);
+  coldef_t *coldef = (coldef_t*)(memory->Allocate(size));
+
+  coldef->type = LSQL_TYPE_INT;
+  coldef->precision = LSQL_TYPE_INT_PREC;
+  coldef->scale = LSQL_TYPE_INT_SCALE;
+  coldef->nullable = false;
 }
 
 void
-VFDummyTableData::FreeData()
+VFDummyTableData::FillData(VFData *data)
 {
+  int32_t val = 1;
+  data->FillField(0, 0, LSQL_TYPE_INT, &val, 0);
 }
 
 static VFDummyTableData dummy_table_data;
@@ -66,6 +85,8 @@ VFDummyTableScan::Run(VProcess *process)
   ret.data = scene->data();
 
   scene->set_over(true);
+
+  return ret;
 }
 
 VFScene* 
