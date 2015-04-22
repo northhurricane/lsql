@@ -139,13 +139,14 @@ AutoHeap::Allocate(uint32_t size)
   }
 
   //创建新的block进行分配
-  uint32_t size_new = 0;
+  uint32_t size_new = size * 2;
   HeapBlock *block_new = HeapBlock::Create(size_new);
   if (block_new == NULL)
     return NULL;
 
   lastest_block_->set_next(block_new);
   lastest_block_ = block_new;
+  total_bytes_ += size_new;
 
   void *mem = NULL;
   mem = block_new->Allocate(size);
@@ -181,6 +182,8 @@ AutoHeap::Initialize(uint32_t size)
 
   blocks_ = block;
   lastest_block_ = block;
+
+  total_bytes_ = size;
 
   return true;
 }
