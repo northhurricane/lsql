@@ -90,16 +90,16 @@ VFDummyTableScan::Run(VProcess *process)
 }
 
 VFScene* 
-VFDummyTableScan::CreateScene(Memory *memory)
+VFDummyTableScan::CreateScene(VProcess *process)
 {
   //创建函数运行现场
-  VFDummyTableScene *scene = NULL;
+  VFDummyTableScene *scene = new VFDummyTableScene();
 
   return scene;
 }
 
 
 void
-VFDummyTableScan::DestroyScene()
+VFDummyTableScan::DestroyScene(VProcess *process)
 {
 }

@@ -9,7 +9,7 @@ void testSelectConst()
   VFCalc calc;
   VFDummyTableScan dummyTable;
   calc.set_first(&dummyTable);
-  program.set_entrance(&calc);
+  bool success = program.Link(&calc);
 
   //虚拟进程运行
   VProcess process;
@@ -21,7 +21,7 @@ void testSelectConst()
 
 int main(int argc, char* argv[])
 {
-  //  testSelectConst();
+  testSelectConst();
 
   return 0;
 }

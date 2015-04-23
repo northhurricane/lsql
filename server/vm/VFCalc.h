@@ -3,12 +3,16 @@
 
 #include "vm.h"
 
+class VFCalcScene : public VFScene
+{
+};
+
 class VFCalc : public VFunction
 {
 public :
   virtual vfreturn_t Run(VProcess *process);
-  virtual VFScene* CreateScene(Memory *memory);
-  virtual void DestroyScene();
+  virtual VFScene* CreateScene(VProcess *process);
+  virtual void DestroyScene(VProcess *process);
 };
 
 #endif //LSQL_SERVER_VM_VFCalc_H_
