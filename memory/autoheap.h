@@ -3,7 +3,6 @@
 
 #include "lsql.h"
 #include "memory.h"
-#include <list>
 
 using namespace std;
 
@@ -24,7 +23,7 @@ private :
   uint32_t used_bytes_;   //已使用的字节数
 
   HeapBlock *blocks_;
-  HeapBlock *lastest_block_;  //最后一次分配的block，也是blocks_链表的最后一个
+  HeapBlock *last_block_; //最后一次分配的block，也是blocks_链表的最后一个
 
   AutoHeap();
   ~AutoHeap();
@@ -32,10 +31,13 @@ private :
     return success. true is successful, false is failed
    */
   bool Initialize(uint32_t size);
+  /*
+    销毁heap对象
+   */
   void Deinitialize();
 
-  //for debug.
-  typedef list<HeapBlock*> heaps;
+  uint32_t GetLastSize();
+
 };
 
 #endif //LSQL_MEMORY_AUTOHEAP_H_

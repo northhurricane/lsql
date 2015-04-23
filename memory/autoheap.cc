@@ -14,6 +14,7 @@ public :
   void* Allocate(uint32_t size);
   HeapBlock *next() {return next_;}
   void set_next(HeapBlock *next) { next_ = next; }
+  uint32_t block_size() { return block_size_;; }
   bool HasSpace(uint32_t size)
   {
     if ((used_bytes_ + size) > block_size_)
@@ -121,10 +122,10 @@ void*
 AutoHeap::Allocate(uint32_t size)
 {
   //查看最后一个block是否有存储空间
-  if (lastest_block_->HasSpace(size))
+  if (last_block_->HasSpace(size))
   {
     used_bytes_ += size;
-    return lastest_block_->Allocate(size);
+    return last_block_->Allocate(size);
   }
 
   //查看所有block是否有空间
@@ -139,13 +140,20 @@ AutoHeap::Allocate(uint32_t size)
   }
 
   //创建新的block进行分配
-  uint32_t size_new = size * 2;
+  uint32_t size_new = 0, last_size = GetLastSize();
+
+  size_new = last_size * 2;
+  if (size > size_new)
+  {
+    size_new = size;
+  }
+
   HeapBlock *block_new = HeapBlock::Create(size_new);
   if (block_new == NULL)
     return NULL;
 
-  lastest_block_->set_next(block_new);
-  lastest_block_ = block_new;
+  last_block_->set_next(block_new);
+  last_block_ = block_new;
   total_bytes_ += size_new;
 
   void *mem = NULL;
@@ -165,7 +173,7 @@ AutoHeap::AutoHeap()
   total_bytes_ = 0;
   used_bytes_ = 0;
   blocks_ = NULL;
-  lastest_block_ = NULL;
+  last_block_ = NULL;
 }
 
 AutoHeap::~AutoHeap()
@@ -181,7 +189,7 @@ AutoHeap::Initialize(uint32_t size)
     return false;
 
   blocks_ = block;
-  lastest_block_ = block;
+  last_block_ = block;
 
   total_bytes_ = size;
 
@@ -201,4 +209,10 @@ AutoHeap::Deinitialize()
 
     HeapBlock::Destroy(temp);
   }
+}
+
+uint32_t
+AutoHeap::GetLastSize()
+{
+  return last_block_->block_size();
 }
