@@ -15,7 +15,7 @@ private:
   VFData *data_;
   AutoHeap *memory_;
 
-  VFData* BuildData(Memory *memory);
+  void BuildData(Memory *memory);
   coldef_t* BuildColdef(Memory *memory);
   void FillData(VFData *data);
 };
@@ -23,7 +23,7 @@ private:
 VFDummyTableData::VFDummyTableData()
 {
   memory_ = AutoHeap::Create();
-  data_ = BuildData(memory_);
+  BuildData(memory_);
 }
 
 VFDummyTableData::~VFDummyTableData()
@@ -32,7 +32,7 @@ VFDummyTableData::~VFDummyTableData()
   AutoHeap::Destroy(memory_);
 }
 
-VFData *
+void
 VFDummyTableData::BuildData(Memory *memory)
 {
   uint16_t column_amounts = 1;

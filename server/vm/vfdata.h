@@ -33,6 +33,7 @@ public:
 public :
   uint16_t fields_amount() { return fields_amount_; }
   uint16_t filled_rows() { return filled_rows_; }
+  void set_filled_rows(uint16_t rows) { filled_rows_ = rows; }
 
   void ClearData() { filled_rows_ = 0; }
 

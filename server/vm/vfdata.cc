@@ -5,6 +5,8 @@ VFData*
 VFData::Create(uint16_t columns_amount, coldef_t *coldefs,
                uint16_t rows_array_size, Memory *memory)
 {
+  int i = 0;
+
   VFData *vfdata = new VFData();
   //分配指向各列的数组空间
   uint32_t size = 0;
@@ -17,7 +19,7 @@ VFData::Create(uint16_t columns_amount, coldef_t *coldefs,
   memcpy(vfdata->coldefs_, coldefs, size);
 
   //分配各个vffield的存储空间
-  for (int i = 0; i < columns_amount; i++)
+  for (i = 0; i < columns_amount; i++)
   {
     coldef_t *coldef = coldefs + i;
     vffield_t *vffield = vfdata->fields_ + i;
@@ -25,14 +27,22 @@ VFData::Create(uint16_t columns_amount, coldef_t *coldefs,
     bool use_ref_field = type_is_fix_storage_lenght(coldef->type);
     if (use_ref_field)
     {
+      vffield->type = FIELD_REF;
       size = FIELD_REF_SIZE * rows_array_size;
     }
     else
     {
+      vffield->type = FIELD_ALL;
       size = FIELD_ALL_SIZE *rows_array_size;
     }
 
     vffield->data = memory->Allocate(size);
+    if (vffield->data == NULL)
+    {
+      //内存不足，需要进行相应的处理
+    }
+    vffield->coldef = *coldef;
+    vffield->amount = rows_array_size;
   }
   vfdata->memory_ = memory;
   vfdata->fields_amount_ = columns_amount;
