@@ -13,8 +13,10 @@ VFCalc::CreateScene(VProcess *process)
   VFCalcScene *scene = new VFCalcScene();
 
   //根据函数的列信息创建数据
-  VFData *data = VFData::Create(coldefs()->col_num, coldefs()->coldefs,
-                                process->rows_array_size(), process->memory());
+  VFData *data = VFData::Create(coldefs()->col_num,
+                                coldefs()->coldefs,
+                                process->rows_array_size(),
+                                process->memory());
 
   scene->set_data(data);
 

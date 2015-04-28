@@ -2,6 +2,7 @@
 #include "VFCalc.h"
 #include "VFDummyTableScan.h"
 #include "vmexpr.h"
+#include "VFClusterScan.h"
 
 /*测试进行常量查询*/
 void testSelectConst()
@@ -48,6 +49,17 @@ void testSelectConst()
 /*测试进行列查询*/
 void testSelectColumn()
 {
+  //select f1 from t1;
+  VFClusterScan cluster_scan(NULL);
+
+  VProgram program;
+
+  bool success = program.Link(&cluster_scan);
+}
+
+void testSelectColumn2()
+{
+  //select f1,f1 + 1 from t1;
 }
 
 
