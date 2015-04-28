@@ -9,7 +9,6 @@
 struct row_struct
 {
   uint16_t amount;  //列数目
-  field_t *fields;  //数据列
 };
 typedef struct row_struct row_t;
 
@@ -17,7 +16,6 @@ typedef struct row_struct row_t;
 struct row_ref_struct
 {
   uint16_t amount;      //列数目
-  field_ref_t *fields;  //列数据
 };
 typedef struct row_ref_struct row_ref_t;
 

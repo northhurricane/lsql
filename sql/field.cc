@@ -20,7 +20,7 @@ void field_set_data(field_type_t field_type, void *field
   {
     if (field_type == FIELD_ALL)
     {
-      field_t *field_all = (field_t*)field;
+      field_all_t *field_all = (field_all_t*)field;
       memcpy(field_all->chars, data, length);
       field_all->chars_length = length;
     }
