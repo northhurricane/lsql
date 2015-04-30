@@ -106,7 +106,6 @@ void testSelectColumn2()
   //select f1,f1 + 1 from t1;
 }
 
-
 int main(int argc, char* argv[])
 {
   testSelectConst();

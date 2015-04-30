@@ -4,58 +4,9 @@
 #include <list>
 #include "field.h"
 
-#define MAX_SOURCE_COLUMN_NUMBER 32
-
-enum vm_expr_type_enum
-{
-  CONSTANT = 1, //常量表达式。如：select 1
-  COLUMN   = 2, //列表达式。如：select f1 from t1;的f1
-  ADD      = 3,
-  MINUS    = 4,
-  MULTIPLY = 5,
-  DIVID    = 6,
-  FUNCTION = 7,
-};
-typedef enum vm_expr_type_enum vm_expr_type_t;
-
-struct vm_expr_struct;
-
-struct vm_expr_constant_struct
-{
-};
-
-struct vm_expr_bo_struct
-{
-  struct vm_exprt_struct *expr1;
-  struct vm_expr_struct *expr2;
-};
-
 /*
-  用来说明各个虚拟函数（VF）是如何使用调用函数返回的数据的
-  1、VF有多少列，就有多少个用于说明该列的生成的expr
- */
-struct vm_expr_struct
-{
-  vm_expr_type_t type;  //
-
-  //该表达式的输入
-};
-typedef struct vm_expr_struct vm_expr_t;
-
-struct vm_exprs_struct
-{
-  uint16_t columns_amount;     //列的个数
-  vm_expr_t *exprs;  //记录各列的使用情况
-};
-typedef struct vm_exprs_struct vm_exprs_t;
-
-/*
-  由于column的表达式类型的存在，所以在表达运行时
- */
-struct vm_expr_env_struct
-{
-  uint16_t rowi;       //
-};
+  依赖与虚拟机运行的表达式
+*/
 
 using namespace std;
 
