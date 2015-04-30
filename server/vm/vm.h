@@ -6,6 +6,7 @@
 #include "memory.h"
 #include "vfdata.h"
 #include "autoheap.h"
+#include "sql_statement.h"
 
 /* 
    设计目标
@@ -105,6 +106,59 @@ public :
   coldef_array_t *coldefs() { return coldefs_; }
 };
 
+/*VSQL需要返回*/
+class VSqlResult
+{
+public :
+  enum Type_enum
+  {
+    Rowset = 1,
+    Rowcount = 2,
+    Empty = 3
+  };
+  typedef Type_enum Type;
+
+  Type result_type() { return type_; }
+
+protected :
+  VSqlResult() {}
+  Type type_;
+};
+
+class RowsetResult : public VSqlResult
+{
+public :
+  RowsetResult()
+  {
+    type_ = Rowset;
+  }
+
+private :
+  void *rowset_; //
+};
+
+class RowcountResult : public VSqlResult
+{
+public :
+  RowcountResult()
+  {
+    type_ = Rowcount;
+  }
+private :
+  int64_t rowcount_;
+};
+
+class EmptyResult : public VSqlResult
+{
+public :
+  EmptyResult()
+  {
+    type_ = Empty;
+  }
+};
+
+class VMSQL;
+
 /*每条sql将被转化为一个program。每个program都由若干的function组成*/
 class VProgram
 {
@@ -113,12 +167,18 @@ public :
 
   uint32_t function_amount() {return function_amount_;}
   bool Link(VFunction *entrance);
+
+  /*
+    将生成的可运行的SQL对象进行绑定
+   */
+  bool BindSql(VMSQL *sql);
   VFunction *entrance() { return entrance_; }
   VProgram();
 
 private :
   uint32_t  function_amount_; //程序中的函数个数
   VFunction *entrance_;
+  VMSQL *vmsql_;
 
   bool GenerateFunctionSerial(VFunction *function);
 

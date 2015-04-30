@@ -1,4 +1,5 @@
 #include "vm.h"
+#include "vmsql.h"
 
 /***************VFunction*****************/
 #define SERIAL_UNDEFINE 0xFFFFFFFF
@@ -85,6 +86,15 @@ VProgram::GenerateFunctionSerial(VFunction *function)
 
   if (function->second() != NULL)
     GenerateFunctionSerial(function->second());
+
+  return true;
+}
+
+bool
+VProgram::BindSql(VMSQL *sql)
+{
+  vmsql_ = sql;
+  vmsql_->Link();
 
   return true;
 }
