@@ -8,6 +8,9 @@ class VFCalcScene : public VFScene
 {
 };
 
+/*
+  计算函数中的表达式链表的元素个数就是VFCalcScene返回的结果列的个数。
+*/
 class VFCalc : public VFunction
 {
 public :

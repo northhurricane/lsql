@@ -4,6 +4,16 @@ vfreturn_t
 VFCalc::Run(VProcess *process)
 {
   //进行计算列的操作
+  VMExprtIterator iter = exprs_.begin();
+  for (; iter != exprs_.end(); iter++)
+  {
+    //计算表达式
+    VMExpr *expr = *iter;
+    expr->Calc();
+
+    //计算结果写入VFCalc的VFScene中
+  }
+
   return over_return();
 }
 

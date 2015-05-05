@@ -35,7 +35,9 @@ protected :
 };
 
 typedef list<VMExpr*> VMExprList;
+typedef VMExprList::iterator VMExprtIterator;
 
+/*常量表达式*/
 class VMConstantExpr : public VMExpr
 {
 public :
@@ -46,12 +48,28 @@ private :
   field_all_t data_;
 };
 
+/*列表达式，说明获取数据的来源*/
+#define VM_COLUMN_SOURCE_FIRST 0
+#define VM_COLUMN_SOURCE_SECONDE 1
+struct vm_column_source_struct
+{
+  uint16_t vf_idx; //0表示first，1表示second
+  uint16_t pos;    //vf返回的数据集的列编号。0-based，0表示第一列
+};
+typedef struct vm_column_source_struct vm_column_source_t;
+
 class VMColumnExpr : public VMExpr
 {
 public :
   virtual field_all_t Calc();
+
+  vm_column_source_t source() { return source_; }
+  void set_source(vm_column_source_t source) { source_ = source; }
+private :
+  vm_column_source_t source_;
 };
 
+/*加法表达式*/
 class VMAddExpr : public VMExpr
 {
 public :
