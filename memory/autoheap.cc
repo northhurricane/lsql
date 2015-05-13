@@ -216,3 +216,13 @@ AutoHeap::GetLastSize()
 {
   return last_block_->block_size();
 }
+
+/*calling function for c*/
+void*
+autoheap_alloc(void *heap, uint32_t size)
+{
+  AutoHeap *autoheap = (AutoHeap*)heap;
+
+  return autoheap->Allocate(size);
+}
+

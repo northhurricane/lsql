@@ -2,10 +2,14 @@
 #define LSQL_SQL_PARSE_PARSE_H_
 
 /*
-  用于
+  用于进行语法分析的接口
 */
 
 #include "lsql.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct parse_error_struct
 {
@@ -33,14 +37,16 @@ struct parse_create_table_struct
 };
 typedef struct parse_create_table_struct parse_create_table_t;
 
-class AutoHeap;
-
 /*
   成功:返回分析结果
   失败:返回NULL
 */
 parse_head_t*
 lsql_parse(const char *sql_str, parse_error_t *error
-           , AutoHeap *heap);
+           , void *heap);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //LSQL_SQL_PARSE_PARSE_H_
