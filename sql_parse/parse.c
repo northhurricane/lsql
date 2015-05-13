@@ -1,0 +1,6 @@
+/*
+*/
+
+void yyerror(char const*)
+{
+}
