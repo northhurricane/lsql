@@ -12,7 +12,8 @@ g++ -g -I ../include -I ../server/vm -I ../memory/ -I ../sql/ ../memory/autoheap
 g++ -g -I ../include -I ../server/vm -I ../memory/ -I ../sql/ ../sql/field.cc ../server/vm/vmexpr.cc ../server/vm/vm_expr_test.cc -o lsqlvmexprtest
 
 //test parse
-g++ -g -I ../include ../sql_parse/testparse.cc ../sql_parse/lsql.tab.c ../sql_parse/lsql.lex.c ../sql_parse/lex.c ../sql_parse/parse.cc ../sql_parse/parse.c -o testparse
+g++ -g -I ../include -I ../memory ../sql_parse/testparse.cc ../sql_parse/lsql.tab.c ../sql_parse/lsql.lex.c ../sql_parse/lex.c ../sql_parse/parse.cc ../sql_parse/parse.c ../memory/autoheap.cc -o testparse
+
 
 
 

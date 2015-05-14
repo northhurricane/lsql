@@ -6,6 +6,7 @@
 */
 
 #include "lsql.h"
+#include "lex.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,8 +43,9 @@ typedef struct parse_create_table_struct parse_create_table_t;
   失败:返回NULL
 */
 parse_head_t*
-lsql_parse_c(const char *sql_str, parse_error_t *error
-             , void *heap);
+lsql_parse(char *sql_str, parse_error_t *error, void *heap);
+
+
 
 #ifdef __cplusplus
 }
