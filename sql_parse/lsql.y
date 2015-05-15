@@ -19,7 +19,7 @@ void yyerror(void *, void *, char const*);
 %token KW_TABLE
 
 /*misc*/
-%token ID
+%token TOKEN_ID
 %token LT_INTEGER
 
 /* api defines */
@@ -61,7 +61,7 @@ expr {
 
 from_option :
 |
-KW_FROM ID {
+KW_FROM TOKEN_ID {
 };
 
 ddl_sql :
@@ -69,7 +69,7 @@ create_table_sql {
 };
 
 create_table_sql :
-KW_CREATE KW_TABLE ID {
+KW_CREATE KW_TABLE TOKEN_ID {
 };
 
 expr :

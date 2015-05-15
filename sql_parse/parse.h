@@ -24,9 +24,17 @@ struct parse_head_struct
 };
 typedef struct parse_head_struct parse_head_t;
 
+struct parse_select_item_list_struct
+{
+  int temp;
+};
+typedef struct parse_select_item_list_struct parse_select_item_list_t;
+
 struct parse_select_struct
 {
   parse_head_t head;
+
+  parse_select_item_list_t list;
 };
 typedef struct parse_select_struct parse_select_t;
 

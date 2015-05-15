@@ -5,6 +5,7 @@
 #include "lex.h"
 #include "parse.h"
 #include "parse_inner.h"
+#include "autoheap_c.h"
 
 void yyerror(void *heap, void *hlex, char const* msg)
 {
@@ -31,6 +32,10 @@ YYSTYPE
 parse_create_select_sql(void *heap
                         , YYSTYPE select_list, YYSTYPE from_option)
 {
-  return NULL;
+  parse_select_t *select = NULL;
+
+  select = (parse_select_t*)autoheap_alloc(heap, sizeof(parse_select_t[1]));
+
+  return select;
 }
 

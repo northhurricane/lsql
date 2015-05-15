@@ -218,6 +218,7 @@ AutoHeap::GetLastSize()
 }
 
 /*calling function for c*/
+extern "C"
 void*
 autoheap_alloc(void *heap, uint32_t size)
 {

@@ -1,4 +1,5 @@
 #include "lsql.lex.h"
+#include "lsql.tab.h"
 #include "lex.h"
 #include <stdlib.h>
 
@@ -21,6 +22,29 @@ lex_init(char *input)
   return hlex;
 }
 
+int mock_select()
+{
+  static int count = 0;
+  switch (count)
+  {
+  case 0:
+  {
+    count++;
+    return KW_SELECT;
+  }
+  case 1:
+  {
+    count++;
+    return LT_INTEGER;
+  }
+  default:
+  {
+    count = 0;
+    return 0;
+  }
+  }
+}
+
 /*
   为yyparse提供词法分析的接口
 */
@@ -28,12 +52,21 @@ int yylex(YYSTYPE *lvalp, hlex_t hlex)
 {
   yyscan_t scanner;
   lex_t *lex = (lex_t*)hlex;
+  int token;
+
+  if (1)
+    return mock_select();
 
   scanner = lex->scanner;
 
-  lsqllex(scanner);
+  token = lsqllex(scanner);
+  if (token == TOKEN_ID)
+  {
+    /*对id进行检查*/
+    return TOKEN_ID;
+  }
 
-  return 0;
+  return token;
 }
 
 void
