@@ -2,8 +2,6 @@
 */
 
 #include "lsql.tab.h"
-#include "lex.h"
-#include "parse.h"
 #include "parse_inner.h"
 #include "autoheap_c.h"
 

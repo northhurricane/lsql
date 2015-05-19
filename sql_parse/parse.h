@@ -5,8 +5,7 @@
   用于进行语法分析的接口
 */
 
-#include "lsql.h"
-#include "lex.h"
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {

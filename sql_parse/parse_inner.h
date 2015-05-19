@@ -1,6 +1,8 @@
 #ifndef LSQL_SQL_PARSE_PARSE_INNER_H_
 #define LSQL_SQL_PARSE_PARSE_INNER_H_
 
+#include "lsql.h"
+#include "lex.h"
 #include "parse.h"
 
 YYSTYPE
