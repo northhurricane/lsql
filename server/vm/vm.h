@@ -6,7 +6,7 @@
 #include "memory.h"
 #include "vfdata.h"
 #include "autoheap.h"
-#include "sql_statement.h"
+
 
 /* 
    设计目标
