@@ -4,6 +4,6 @@
 #include "parse.h"
 #include "vm.h"
 
-int compile(parse_head_t *head, VProgram **program);
+int lsql_compile(parse_head_t *head, VProgram **program);
 
 #endif //LSQL_SERVER_COMPILE_COMPILE_H_

@@ -1,0 +1,7 @@
+#ifndef LSQL_SQL_PARSE_PARSE_DEF_H_
+#define LSQL_SQL_PARSE_PARSE_DEF_H_
+
+#define PARSE_SELECT 1
+
+
+#endif //LSQL_SQL_PARSE_PARSE_DEF_H_

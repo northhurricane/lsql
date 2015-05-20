@@ -15,7 +15,7 @@ g++ -g -I ../include -I ../server/vm -I ../memory/ -I ../sql/ ../sql/field.cc ..
 g++ -g -I ../include -I ../memory ../sql_parse/testparse.cc ../sql_parse/lsql.tab.c ../sql_parse/lsql.lex.c ../sql_parse/lex.c ../sql_parse/parse.c ../memory/autoheap.cc -o testparse
 
 //test compile
-g++ -g -I ../include -I ../memory -I ../sql_parse -I ../server/compile -I ../server/vm ../server/compile/compile.cc ../test/testcompile.cc ../memory/autoheap.cc -o testcompile
+g++ -g -I ../include -I ../memory -I ../sql_parse -I ../server/compile -I ../server/vm -I ../util ../server/compile/compile.cc ../test/testcompile.cc ../memory/autoheap.cc -o testcompile
 
 //test llist
 g++ -g -I ../util ../dev_test/testllist.c -o testllist

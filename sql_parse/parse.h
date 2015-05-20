@@ -6,6 +6,8 @@
 */
 
 #include <stdint.h>
+#include "llist_p.h"
+#include "parse_def.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,17 +25,34 @@ struct parse_head_struct
 };
 typedef struct parse_head_struct parse_head_t;
 
-struct parse_select_item_list_struct
+struct parse_select_from_struct
 {
-  int temp;
+  parse_head_t head;
 };
-typedef struct parse_select_item_list_struct parse_select_item_list_t;
+typedef parse_select_from_struct parse_select_from_t;
+
+struct parse_select_item_struct
+{
+  parse_head_t head;
+
+  llist_pnode_t node;
+};
+typedef struct parse_select_item_struct parse_select_item_t;
+
+struct parse_select_items_struct
+{
+  parse_head_t head;
+
+  llist_p_t items;
+};
+typedef struct parse_select_items_struct parse_select_items_t;
 
 struct parse_select_struct
 {
   parse_head_t head;
 
-  parse_select_item_list_t list;
+  parse_select_items_t *items;
+  parse_select_from_t *from;
 };
 typedef struct parse_select_struct parse_select_t;
 
