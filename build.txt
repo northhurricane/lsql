@@ -20,7 +20,8 @@ g++ -g -I ../include -I ../memory -I ../sql_parse -I ../server/compile -I ../ser
 //test llist
 g++ -g -I ../util ../dev_test/testllist.c -o testllist
 
-
+//test lsu
+g++ -I ../file/ -I ../engines/ldb/ lsu_test.cc ../engines/ldb/lsu.cc ../file/lfile.cc
 
 
 

@@ -1,7 +1,23 @@
 #include "lfile.h"
 
+//linux header
+#include <stdio.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+
 lfile_t
-lfile_create(const char *fullpath)
+lfile_create(const char *file)
 {
-  return NULL;
+  lfile_t lfile = open(file, O_CREAT|O_WRONLY, 0644);
+
+  return lfile;
+}
+
+void
+lfile_expand(lfile_t file, uint64_t size)
+{
+  char buff[1] = {0};
+  lseek(file, size - 1, SEEK_SET);
+  write(file, buff, 1);
 }

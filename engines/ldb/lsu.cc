@@ -1,62 +1,53 @@
 #include "lsu.h"
-#include "lfile.h"
+#include <string.h>
 
-/*
-  lus
-*/
 LSU*
-LSU::Create(const char* path, const char *name)
+LSU::Create(const char* path, const char *name, uint32_t page_size)
 {
   LSU *su = new LSU();
 
-  su->data_ = LSUData::Create(path, name);
-  su->ctrl_ = LSUCtrl::Create(path, name);
-  
+  su->page_size_ = page_size;
+  strcpy(su->path_, path);
+  strcpy(su->name_, name);
+
+  su->Initialize();
+
   return su;
 }
 
-/*
-  LSUData
-*/
-LSUData*
-LSUData::Create(const char* path, const char *name)
+void
+LSU::Initialize()
 {
-  LSUData *data = new LSUData();
-
-  data->Initialize(path, name);
-
-  return data;
+  CreateStorage();
+  InitializeFirstSI();
 }
 
-int
-LSUData::Initialize(const char* path, const char *name)
+void
+LSU::CreateStorage()
 {
-  char full_path[1024];
-
-  lfile_t file_create(full_path);
-
-  return (0);
+  char file[1024];
+  strcpy(file, path_);
+  strcat(file, name_);
+  lfile_ = lfile_create(file);
 }
 
-/*
-  LSUCtrl
-*/
-LSUCtrl*
-LSUCtrl::Create(const char* path, const char *name)
+void
+LSU::InitializeFirstSI()
 {
-  LSUCtrl *ctrl = new LSUCtrl();
+  uint32_t head_xdes_size = page_size_;
+  uint32_t extend_size = page_size_ * PAGE_NUMBER_PER_EXTEND;
+  uint32_t file_size = head_xdes_size + extend_size;
 
-  ctrl->Initialize(path, name);
-
-  return ctrl;
+  Expand(file_size);
 }
 
-int
-LSUCtrl::Initialize(const char* path, const char *name)
+void
+LSU::Expand(uint64_t storage_size)
 {
-  char full_path[1024];
+  lfile_expand(lfile_, storage_size);
+}
 
-  lfile_t file_create(full_path);
 
-  return (0);
+LSU::LSU()
+{
 }

@@ -5,12 +5,17 @@
 #define NULL (0)
 #endif
 
-typedef FILE *lfile_t;
+#include <stdint.h>
+
+typedef int lfile_t;
 
 lfile_t
-lfile_create(const char *fullpath);
+lfile_create(const char *file);
 
 lfile_t
-lfile_open(const char *fullpaht);
+lfile_open(const char *file);
+
+void
+lfile_expand(lfile_t lfile, uint64_t size);
 
 #endif //LSQL_FILE_LFILE_H_
