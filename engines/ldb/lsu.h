@@ -21,6 +21,14 @@
 */
 
 #define PAGE_NUMBER_PER_EXTEND (64)
+#define FIRST_CB_PAGE_NO (0)
+
+#define LSU_CB_HEAD_SIZE (256)
+
+/*定义control block的结构*/
+/*头部定义，对于第一个控制页头部包括各个xdes entry的链表等信息，对于后续的控制页，初始化为0*/
+#define LSU_CB_HEAD (0)
+#define LSU_CB_XDES_ENTRIES (LSU_CB_HEAD + LSU_CB_HEAD)
 
 class LSU
 {
@@ -34,9 +42,9 @@ public :
   int Read(uint32_t page_no);
   /*写入页*/
   int Write(uint32_t page_no);
-  /*用于扩展文件，增加存储空间*/
-  int AllocateExtend();
+  /*分配internal node page*/
   int AllocateINP();
+  /*分配data node page*/
   int AllocateDNP();
 
 private :
@@ -44,8 +52,12 @@ private :
   void CreateStorage();
   void InitializeFirstSI();
   void Expand(uint64_t size);
+  void InitializeFirstCB();
+  void InitializeExtend();
+  void InitializeCBHead(uint32_t page_no);
+  void InitializeXDES();
 
-  LSU();
+  LSU() {}
 
   uint32_t page_size_; //lsu的页大小
   char path_[256]; //存储的位置

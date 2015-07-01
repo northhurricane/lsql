@@ -21,3 +21,8 @@ lfile_expand(lfile_t file, uint64_t size)
   lseek(file, size - 1, SEEK_SET);
   write(file, buff, 1);
 }
+
+void
+lfile_write(lfile_t lfile, uint64_t offset, uint8_t *buff, uint32_t size)
+{
+}
