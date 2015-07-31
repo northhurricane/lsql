@@ -36,8 +36,21 @@ struct xdes_entry_struct
 };
 typedef struct xdes_entry_struct xdes_entry_t;
 
+//extend pointer定义
 #define UNDEFINED_PAGE_NO (0xFFFFFFFF)
 #define UNDEFINED_OFFSET  (0xFFFF)
+
+//extend entry定义
+#define ENTRY_STATE_UNDEFINED (0xFFFFFFFF)
+#define ENTRY_STATE_FREE (1)
+#define ENTRY_STATE_FREE_FRAG (2)
+#define ENTRY_STATE_FULL (3)
+
+//extend page state
+#define EXTEND_BIT_MAP_UNDEFINED (0xFF)
+#define EXTEND_PAGE_STATE_UNDEFINED (0x3)
+#define EXTEND_PAGE_STATE_OCCUPIED (0)
+#define EXTEND_PAGE_STATE_FREE (1)
 
 LSU*
 LSU::Create(const char* path, const char *name, uint32_t page_size)
@@ -138,21 +151,21 @@ LSU::InitializeCBHead(uint32_t page_no)
     //初始化free xdes entry的list
     lendian_write_uint32(buff, 0);
     offset_buff += LINT32_SIZE;
-    lendian_write_uint32(buff,UNDEFINED_PAGE_NO);
+    lendian_write_uint32(buff, UNDEFINED_PAGE_NO);
     offset_buff += LINT32_SIZE;
     lendian_write_uint16(buff, UNDEFINED_OFFSET);
     offset_buff += LINT16_SIZE;
     //初始化free-frag data xdes entry的list
     lendian_write_uint32(buff, 0);
     offset_buff += LINT32_SIZE;
-    lendian_write_uint32(buff,UNDEFINED_PAGE_NO);
+    lendian_write_uint32(buff, UNDEFINED_PAGE_NO);
     offset_buff += LINT32_SIZE;
     lendian_write_uint16(buff, UNDEFINED_OFFSET);
     offset_buff += LINT16_SIZE;
     //初始化full data xdes entry的list
     lendian_write_uint32(buff, 0);
     offset_buff += LINT32_SIZE;
-    lendian_write_uint32(buff,UNDEFINED_PAGE_NO);
+    lendian_write_uint32(buff, UNDEFINED_PAGE_NO);
     offset_buff += LINT32_SIZE;
     lendian_write_uint16(buff, UNDEFINED_OFFSET);
     offset_buff += LINT16_SIZE;
@@ -187,6 +200,32 @@ LSU::InitializeCBHead(uint32_t page_no)
 void
 LSU::InitializeXDES()
 {
+  
 }
 
+struct xdes_entry_struct
+{
+  xdes_entry_link_t link;
+  uint32_t state;
+  uint64_t page_state_bitmap[PAGE_STATE_BITMAP_SIZE];
+};
+typedef struct xdes_entry_struct xdes_entry_t;
 
+void
+lsu_write_xdes_entry(uint8_t *buff)
+{
+  uint32_t offset = 0;
+  //写入link
+  lendian_write_uint32(offset, PAGE_NO_UNDEFINED);
+  offset += LINT32_SIZE;
+  lendian_write_uint16(offset, PAGE_OFFSET_UNDEFINED);
+  //写入state
+  lendian_write(offset, EXTEND_STATE_UNDEFIN);
+  //写入状态
+  lendian_write(offset, EXTEND_BIT_MAP_UNDEFINED);
+  offset += LINT8_SIZE;
+  lendian_write(offset, EXTEND_BIT_MAP_UNDEFINED);
+  offset += LINT8_SIZE;
+}
+
+  
