@@ -3,55 +3,6 @@
 #include "lendian.h"
 #include "ltypedef.h"
 
-/*指向*/
-struct xdes_entry_pointer_struct
-{
-  uint32_t page_no;       //0-based。extend entry所在的
-  uint16_t entry_offset;  //0-based。用于指明extend的
-};
-typedef struct xdes_entry_pointer_struct xdes_entry_pointer_t;
-
-struct xdes_entry_list_struct
-{
-  xdes_entry_pointer_t first;
-  xdes_entry_pointer_t last;
-};
-typedef struct xdes_entry_list_struct xdes_entry_list_t;
-
-struct xdes_entry_link_struct
-{
-  xdes_entry_pointer_t prev;
-  xdes_entry_pointer_t next;
-};
-typedef xdes_entry_link_struct xdes_entry_link_t;
-
-//定义extend descriptor entry
-//用于记录extend的页状态的数组长度。每页需要两个bit位进行描述，所以是(64 * 2)/8
-#define PAGE_STATE_BITMAP_SIZE ((PAGE_NUMBER_PER_EXTEND * 2)  / 8)
-struct xdes_entry_struct
-{
-  xdes_entry_link_t link;
-  uint32_t state;
-  uint64_t page_state_bitmap[PAGE_STATE_BITMAP_SIZE];
-};
-typedef struct xdes_entry_struct xdes_entry_t;
-
-//extend pointer定义
-#define UNDEFINED_PAGE_NO (0xFFFFFFFF)
-#define UNDEFINED_OFFSET  (0xFFFF)
-
-//extend entry定义
-#define ENTRY_STATE_UNDEFINED (0xFFFFFFFF)
-#define ENTRY_STATE_FREE (1)
-#define ENTRY_STATE_FREE_FRAG (2)
-#define ENTRY_STATE_FULL (3)
-
-//extend page state
-#define EXTEND_BIT_MAP_UNDEFINED (0xFF)
-#define EXTEND_PAGE_STATE_UNDEFINED (0x3)
-#define EXTEND_PAGE_STATE_OCCUPIED (0)
-#define EXTEND_PAGE_STATE_FREE (1)
-
 LSU*
 LSU::Create(const char* path, const char *name, uint32_t page_size)
 {
@@ -87,7 +38,9 @@ LSU::AllocateDNP()
 void
 LSU::Initialize()
 {
+  //创建存储空间
   CreateStorage();
+  //初始化首个存储
   InitializeFirstSI();
 }
 
@@ -103,17 +56,11 @@ LSU::CreateStorage()
 void
 LSU::InitializeFirstSI()
 {
-  uint32_t head_xdes_size = page_size_;
-  uint32_t extend_size = page_size_ * PAGE_NUMBER_PER_EXTEND;
-  uint32_t file_size = head_xdes_size + extend_size;
-
-  //创建文件
-  Expand(file_size);
-
   //初始化第一个控制页的内容
   InitializeFirstCB();
-  //初始化簇
-  InitializeExtend();
+
+  //初始化extend的存储空间
+  AllocateExtend();
 }
 
 void
@@ -125,18 +72,26 @@ LSU::Expand(uint64_t storage_size)
 void
 LSU::InitializeFirstCB()
 {
+  uint32_t file_size = page_size_;
+
+  Expand(file_size);
+
   //初始化第一控制页的特殊部分
   InitializeCBHead(0);
+
   //初始化xdes的通用字段
   InitializeXDES();
 }
 
 void
-LSU::InitializeExtend()
+LSU::AllocateExtend()
 {
-  //什么也不做
+  //
 }
 
+/*
+  初始化控制块
+*/
 void
 LSU::InitializeCBHead(uint32_t page_no)
 {
@@ -194,6 +149,7 @@ LSU::InitializeCBHead(uint32_t page_no)
 
   memset(buff + offset_buff, 0, LSU_CB_HEAD_SIZE - offset_buff);
   offset_w = page_no * page_size_;
+  //写入存储
   lfile_write(lfile_, offset_w, buff, LSU_CB_HEAD_SIZE);
 }
 
@@ -203,16 +159,8 @@ LSU::InitializeXDES()
   
 }
 
-struct xdes_entry_struct
-{
-  xdes_entry_link_t link;
-  uint32_t state;
-  uint64_t page_state_bitmap[PAGE_STATE_BITMAP_SIZE];
-};
-typedef struct xdes_entry_struct xdes_entry_t;
-
 void
-lsu_write_xdes_entry(uint8_t *buff)
+lsu_write_undef_xdes_entry(uint8_t *buff)
 {
   uint32_t offset = 0;
   //写入link
