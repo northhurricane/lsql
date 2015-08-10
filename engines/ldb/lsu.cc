@@ -40,8 +40,26 @@ LSU::Initialize()
 {
   //创建存储空间
   CreateStorage();
-  //初始化首个存储
-  InitializeFirstSI();
+
+  //创建存储段
+  AllocateExtend();
+}
+
+void
+LSU::AllocateExtend()
+{
+  //判断是否需要分配新的控制块
+  bool need_create_cb = false;
+  uint32_t cb_page = 0;
+  if (nedd_create_cb)
+  {
+    ExpandCB(cb_page);
+    InitializeCB(cb_page);
+  }
+
+  uint32_t extend_page;
+  ExpandExtend(extend_page);
+  AllocateExtendWriteCB();
 }
 
 void
@@ -54,44 +72,64 @@ LSU::CreateStorage()
 }
 
 void
-LSU::InitializeFirstSI()
-{
-  //初始化第一个控制页的内容
-  InitializeFirstCB();
-
-  //初始化extend的存储空间
-  AllocateExtend();
-}
-
-void
 LSU::Expand(uint64_t storage_size)
 {
   lfile_expand(lfile_, storage_size);
 }
 
 void
-LSU::InitializeFirstCB()
+LSU::ExpandCB(uint32_t page_no)
 {
-  uint32_t file_size = page_size_;
-
-  Expand(file_size);
-
-  //初始化第一控制页的特殊部分
-  InitializeCBHead(0);
-
-  //初始化xdes的通用字段
-  InitializeXDES();
+  //计算需要扩展的空间
+  uint64_t size = size_ + head_.page_size;
+  //扩展文件
+  Expand(size);
+  //初始化控制块
+  InitializeCB(page_no);
+  //更新存储文件的管理信息
+  UpdateManageInfo();
 }
 
 void
-LSU::AllocateExtend()
+LSU::ExpandExtend(uint32_t page_no, uint32_t page_count)
 {
-  //
+  //计算需要扩展的空间
+  uint64_t size = size_ + page_count * head_.page_size;
+  //扩展文件
+  Expand(size);
+  //初始化Extend的页面
+  InitializePage(page_no, page_count);
+  //更新存储文件的管理信息
+  UpdateManageInfo();
+}
+
+void
+LSU::UpdateControlInfo(uint32_t page_no)
+{
+  
+  UpdateManageInfoPhysicly();
+  UpdateManageInfoLogicly();
+}
+
+void
+LSU::UpdateControlInfoPhysicly()
+{
+}
+
+void
+LSU::UpdateControlInfoLogicly()
+{
 }
 
 /*
   初始化控制块
 */
+void
+LSU::InitializeCB(uint32_t page_no)
+{
+  InitializeCBHead(page_no);
+}
+
 void
 LSU::InitializeCBHead(uint32_t page_no)
 {
@@ -149,12 +187,10 @@ LSU::InitializeCBHead(uint32_t page_no)
 
   memset(buff + offset_buff, 0, LSU_CB_HEAD_SIZE - offset_buff);
   offset_w = page_no * page_size_;
-  //写入存储
-  lfile_write(lfile_, offset_w, buff, LSU_CB_HEAD_SIZE);
 }
 
 void
-LSU::InitializeXDES()
+LSU::InitializeXDES(uint32_t page_no)
 {
   
 }

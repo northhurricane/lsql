@@ -29,6 +29,8 @@
 #define LSU_CB_HEAD_SIZE (256)
 
 /*定义control block的布局*/
+/*lsu页面大小*/
+#define LSU_CB_PAGE_SIZE
 /*可用的extend*/
 #define LSU_CB_FREE_EXTEND_LIST
 /*所有页面用尽的inp的extend链表*/
@@ -74,6 +76,21 @@ struct xdes_entry_link_struct
 };
 typedef xdes_entry_link_struct xdes_entry_link_t;
 
+/*控制块的头部，只有第一个控制块的头部信息有效，其他控制块初始化为0。这些信息和lsu是一对一的关系，比如，一个lsu只有一个free_xdes_list*/
+struct lsu_head_struct
+{
+  uint32_t page_size;
+  uint32_t last_cbp_;  //0-based。最后一个cbp的页号
+
+  xdes_entry_list_t free_xdes_list;
+  xdes_entry_list_t full_inp_xdes_list;
+  xdes_entry_list_t frag_inp_xdes_list;
+  xdes_entry_list_t full_dnp_xdes_list;
+  xdes_entry_list_t frag_inp_xdes_list;
+};
+typedef struct lsu_head_struct lsu_head_type;
+
+
 //定义extend descriptor entry
 //用于记录extend的页状态的数组长度。每页需要两个bit位进行描述，所以是(64 * 2)/8
 #define PAGE_STATE_BITMAP_SIZE ((PAGE_NUMBER_PER_EXTEND * 2)  / 8)
@@ -107,6 +124,7 @@ public :
     创建一个存储单元。
    */
   static LSU* Create(const char* path, const char *name, uint32_t page_size);
+
 public :
   /*读取页*/
   int Read(uint32_t page_no);
@@ -122,37 +140,64 @@ private :
     初始化lsu。
   */
   void Initialize();
-  /*
-    创建存储的文件
-  */
-  void CreateStorage();
-  /*
-    初始化第一个存储
-  */
-  void InitializeFirstSI();
-  /*
-    扩展存储空间
-  */
-  void Expand(uint64_t size);
-  /*
-    初始化第一个控制块
-  */
-  void InitializeFirstCB();
   void AllocateExtend();
-  void InitializeCBHead(uint32_t page_no);
-  void InitializeXDES();
 
+  /*
+    存储空间操作（物理操作）
+    1、存储空间不会缩小，只会不断增长，所以只有expand的操作
+    2、只进行两种扩展，控制块的扩展和extend的扩展。前者增加单页的控制块，后者增加扩展段
+    3、不管哪种方式的扩展，都最终通过Expand进行物理层次的存储扩展
+    4、存储空间的操作都是直接对存储的操作，在操作后反馈到映射的内存空间
+  */
+  /*创建存储空间。*/
+  void CreateStorage();
+  /*扩展存储空间*/
+  void Expand(uint64_t size);
+  /*扩展控制块，也就是增加一个页面大小的空间.page为*/
+  void ExpandCB(uint32_t page_no);
+  /*扩展一个extend，也就是增加PAGE_NUMBER_PER_EXTEND个页面*/
+  void ExpandExtend(uint32_t page_no);
+  /*更新存储控制信息*/
+  void UpdateControlInfo();
+  /*更新文件中的信息*/
+  void UpdateControlInfoPhysicly();
+  /*更新内存中的信息*/
+  void UpdateControlInfoLogicly();
+
+  /*
+    对控制块的管理
+  */
+  /*初始化控制块*/
+  void InitializeCB(uint32_t page_no);
+  /*初始化控制块的头*/
+  void InitializeCBHead(uint32_t page_no);
+  /*初始化extend descriptor部分*/
+  void InitializeCBXDES(uint32_t page_no);
+  void InitializePage(uint32_t page_no, uint32_t page_count);
+
+  /*扩展Extend等操作，所需要对CB进行的操作*/
+  /*增加lsu的存储空间，分配新的extend后，需要对CB的内容进行更新*/
+  void AllocateExtendWriteCB();
+  /*分配页面后，对xdes entry进行更新*/
+  void AllocatePageWriteCB();
+  /*释放页面后，对xdes entry进行更新*/
+  void FreePageWriteCB();
+
+  /*
+    初始化函数
+  */
   LSU() {}
 
-  uint32_t page_size_; //lsu的页大小
+  /*成员变量*/
   char path_[256]; //存储的位置
   char name_[256]; //存储单元的名字
-  uint32_t last_cbp_;  //0-based。最后一个cbp的页号
 
   lfile_t  lfile_; //LSU的存储文件
   uint64_t size_;  //LSU的大小
+  uint32_t page_nubmer_; //lsu的页面大小
 
-  
+  /**/
+  lsu_head_t head_; //第一个控制块的头信息
 };
 
 #endif //_LSQL_ENGINES_LDB_LSU_H
