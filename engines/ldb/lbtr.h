@@ -6,22 +6,29 @@
   B+树对象
  */
 
-class lsu;
+class LSU;
 
-class lbtr
+class LBTree
 {
 public :
-  enum rcode {
-    SUCCESS =0,
-  };
-
-  rcode Search();
-  rcode Insert();
-  rcode Delete();
-  rcode Update();
+  void Search();
+  void Insert();
+  void Delete();
+  void Update();
 
 private:
-  lsu *lsu_;  //对象所属的lsu
+  enum InsertResult
+  {
+    Success,
+    NeedSplit,
+    KeyConflict
+  };
+
+  void LocatePosition();
+  void TryInsert(LPage *page);
+  void SplitInsert(LPage *page);
+  
+  LSU *lsu_;  //对象所属的lsu
 };
 
 #endif //_LSQL_ENGINES_LDB_LBTR_H
