@@ -4,34 +4,18 @@
 #include <stdint.h>
 
 /*
-  page存储相关
-*/
-
-class lsu;
-/*
   内存中的page页，和保存于磁盘的数据页对应
 */
 
-class lpage
+class LPage
 {
 public :
-  /*
-    page分为如下几类
-  */
-  enum type_enum
-  {
-    LPAGE_ROOT_LEAF = 1,
-    LPAGE_ROOT_INODE = 2,
-    LPAGE_LEAF = 3,
-    LPAGE_INODE = 4
-  };
-  typedef enum type_enum type_e;
-
-  type_e GetType();
+  void* GetPage() { return page_; }
+  uint8_t GetPoolId() { return pool_id_; }
 
 private :
-  lsu *lsu_;
-  type_e type_;
+  void *page_; //内存页的地址
+  uint8_t pool_id_; //所属pool的id
 };
 
 
