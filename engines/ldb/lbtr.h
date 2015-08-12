@@ -7,6 +7,7 @@
  */
 
 class LSU;
+class LTuple;
 
 class LBTree
 {
@@ -24,9 +25,12 @@ private:
     KeyConflict
   };
 
-  void LocatePosition();
-  void TryInsert(LPage *page);
-  void SplitInsert(LPage *page);
+  /*插入定位，不光得到位置，还要得到搜索至该位置的路径，便于插入时的分裂操作*/
+  void LocateForInsert();
+  /*尝试是否可以直接插入*/
+  void TryInsert(LPage *page, LTuple *tuple);
+  /*分裂当前页的插入*/
+  void SplitInsert(LPage *page, LTuple *tuple);
   
   LSU *lsu_;  //对象所属的lsu
 };

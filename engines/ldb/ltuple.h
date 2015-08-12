@@ -6,6 +6,9 @@
 class Tuple
 {
 public :
+
+private :
+  void *data;
 };
 
 #endif //_LSQL_ENGINES_LDB_LTUPLE_H
