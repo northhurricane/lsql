@@ -2,6 +2,7 @@
 #define LSQL_SQL_PARSE_PARSE_DEF_H_
 
 #define PARSE_SELECT 1
+#define PARSE_INSERT 2
 
 
 #endif //LSQL_SQL_PARSE_PARSE_DEF_H_

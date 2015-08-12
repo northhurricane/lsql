@@ -64,6 +64,17 @@ struct parse_create_table_struct
 };
 typedef struct parse_create_table_struct parse_create_table_t;
 
+struct parse_insert_struct
+{
+  parse_head_t head;
+
+  char *table_name;   //目标表名
+
+  void *fields_list;  //插入列
+  void *values_list;  //插入数据
+};
+typedef struct parse_insert_struct parse_insert_t;
+
 /*
   成功:返回分析结果
   失败:返回NULL
