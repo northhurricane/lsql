@@ -3,6 +3,7 @@
 #include "sess.h"
 #include "lmessage_login.h"
 #include "lmessage_prepare.h"
+#include "lmessage_execute.h"
 #include "sql_process.h"
 
 static void
@@ -22,6 +23,11 @@ task_process_login(Connection *connection, Message *message)
 static void
 task_process_execution(Session *session, Message *message)
 {
+  lmessage_execute_request_t execute_reques;
+  lmessage_execute_request_read(message, &request);
+  if (request.exec_direct)
+  {
+  }
 }
 
 static void
@@ -53,18 +59,17 @@ task_process_message(Connection *conn)
 void
 task_process(const task_t *task)
 {
-    //process message
-    if (task->type == TASK_PROCESS_MESSAGE)
+  //process message
+  if (task->type == TASK_PROCESS_MESSAGE)
+  {
+    //recive request message
+    Connection *conn = (Connection*)(task->content);
+    conn->Recieve();
+    if (!conn->Valid())
     {
-      //recive request message
-      Connection *conn = (Connection*)(task->content);
-      conn->Recieve();
-      if (!conn->Valid())
-      {
-        //连接无效，关闭连接
-        return ;
-      }
-      //process message
+      //连接无效，关闭连接
+      return ;
     }
-
+    //process message
+  }
 }
