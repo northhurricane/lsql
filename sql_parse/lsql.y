@@ -51,8 +51,10 @@ KW_SELECT select_item_list from_option {
 
 select_item_list :
 select_item {
+  $$ = parse_create_select_item_list($1);
 }
 | select_item_list ',' select_item {
+  $$ = parse_add_select_item_to_list($1, $3);
 };
 
 select_item :
