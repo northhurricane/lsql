@@ -33,7 +33,7 @@ public :
   const char *thread_info() {return thread_info_buffer_; }
   void set_thread_info(const char *thread_info) {}
   const char *op_info() { return op_info_buffer_; }
-  void set_op_info(const char *op_info) {}
+  void set_op_info(const char *op_info);
   lthread_t *thread() {return &thread_;}
 };
 

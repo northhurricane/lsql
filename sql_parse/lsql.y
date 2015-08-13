@@ -42,6 +42,7 @@ dml_sql {
 
 dml_sql :
 select_sql {
+  //将语法分析结果传给
 };
 
 select_sql :

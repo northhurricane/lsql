@@ -7,6 +7,9 @@
 static void lsqld_init_net();
 static void lsqld_deal_net_event();
 static void lsqld_create_shutdown_thread();
+static void lsqld_init_vm();
+static void lsqld_deinit_vm();
+static void lsqld_wait_for_deinit_ready();
 
 //the purpose to place main function at first is that I wish beginner
 //can locate main branch as quick as possible. 
@@ -16,15 +19,24 @@ int lsqld_main(int argc, char *argv[])
 {
   LSQLD::GetInstance()->InitializeArguements(argc, argv);
 
-  //所有线程的创建依赖于ThreadManager的初始化
+  //初始化lsqld进程
+  //所有线程的创建依赖于ThreadManager的初始化，必须第一个初始化
   ThreadManager::Initialize();
   TaskManager::Initialize();
 
   lsqld_create_shutdown_thread();
 
+  lsqld_init_vm();
+
   lsqld_init_net();
 
+  //初始化完成，处理连接
   lsqld_deal_net_event();
+
+  //关闭所有端口，不再处理用户请求，进行资源的销毁
+  lsqld_wait_for_deinit_ready();
+
+  lsqld_deinit_vm();
 
   TaskManager::Deinitialize();
   ThreadManager::Deinitialize();
@@ -161,5 +173,17 @@ static void* lsqld_shutdown_thread(void *para)
 }
 
 static void lsqld_create_shutdown_thread()
+{
+}
+
+static void lsqld_init_vm()
+{
+}
+
+static void lsqld_deinit_vm()
+{
+}
+
+static void lsqld_wait_for_deinit_ready()
 {
 }
