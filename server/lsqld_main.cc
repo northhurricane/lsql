@@ -10,6 +10,8 @@ static void lsqld_create_shutdown_thread();
 static void lsqld_init_vm();
 static void lsqld_deinit_vm();
 static void lsqld_wait_for_deinit_ready();
+static void lsqld_init_ldb();
+static void lsqld_deinit_ldb();
 
 //the purpose to place main function at first is that I wish beginner
 //can locate main branch as quick as possible. 
@@ -28,6 +30,8 @@ int lsqld_main(int argc, char *argv[])
 
   lsqld_init_vm();
 
+  lsqld_init_ldb();
+
   lsqld_init_net();
 
   //初始化完成，处理连接
@@ -35,6 +39,8 @@ int lsqld_main(int argc, char *argv[])
 
   //关闭所有端口，不再处理用户请求，进行资源的销毁
   lsqld_wait_for_deinit_ready();
+
+  lsqld_deinit_ldb();
 
   lsqld_deinit_vm();
 
@@ -187,3 +193,12 @@ static void lsqld_deinit_vm()
 static void lsqld_wait_for_deinit_ready()
 {
 }
+
+static void lsqld_init_ldb()
+{
+}
+
+static void lsqld_deinit_ldb()
+{
+}
+

@@ -11,13 +11,16 @@ bool TaskManager::initialized_ = false;
 Thread* TaskManager::threads_ = NULL;
 lmutex_t TaskManager::mutex_;
 lsemaphore_t TaskManager::semaphore_;
-list<task_t*> TaskManager::queue_;
+list<task_t*> TaskManager::pi_queue_;
+list<task_t*> TaskManager::rr_queue_;
 
 lret TaskManager::Initialize()
 {
   initialized_ = true;
 
-  lmutex_init(&mutex_);
+  lmutex_init(&pi_mutex_);
+  lmutex_init(&rr_mutex_);
+  lmutex_init(&free_mutex_);
   lsemaphore_init(&semaphore_, 0);
 
   StartProcessingThreads();
@@ -32,7 +35,9 @@ lret TaskManager::Deinitialize()
   if (threads_ != NULL)
     delete threads_;
 
-  lmutex_destroy(&mutex_);
+  lmutex_destroy(&pi_mutex_);
+  lmutex_destroy(&rr_mutex_);
+  lmutex_destroy(&free_mutex_);
   lsemaphore_destroy(&semaphore_);
 
   return LSQL_SUCCESS;
@@ -47,21 +52,60 @@ void TaskManager::Free(task_t *task)
 {
 }
 
-void TaskManager::Enqueue(task_t* task)
+void TaskManager::EnqueuePI(task_t* task)
 {
-  lmutex_lock(&mutex_);
-  queue_.push_back(task);
-  lmutex_unlock(&mutex_);
+  lmutex_lock(&pi_mutex_);
+  pi_queue_.push_back(task);
+  lmutex_unlock(&pi_mutex_);
   lsemaphore_post(&semaphore_);
 }
 
-task_t* TaskManager::Dequeue()
+task_t* TaskManager::DequeuePI()
 {
+  task_t *task = NULL;
+  lmutex_lock(&pi_mutex_);
+  if (!pi_queue_.empty())
+  {
+    task = pi_queue_.front();
+    pi_queue_.pop_front();
+  }
+  lmutex_unlock(&pi_mutex_);
+  return task;
+}
+
+void TaskManager::EnqueueRR(task_t* task)
+{
+  lmutex_lock(&rr_mutex_);
+  rr_queue_.push_back(task);
+  lmutex_unlock(&rr_mutex_);
+  lsemaphore_post(&semaphore_);
+}
+
+task_t* TaskManager::DequeueRR()
+{
+  task_t *task = NULL;
+  lmutex_lock(&rr_mutex_);
+  if (!rr_queue_.empty())
+  {
+    task = rr_queue_.front();
+    rr_queue_.pop_front();
+  }
+  lmutex_unlock(&rr_mutex_);
+  return task;
+}
+
+task_t *TaskManager::Dequeue()
+{
+  task_t *task = NULL;
   lsemaphore_wait(&semaphore_);
-  lmutex_lock(&mutex_);
-  task_t *task = queue_.front();
-  queue_.pop_front();
-  lmutex_unlock(&mutex_);
+  //查看rr queue是否有任务
+  if (!rr_queue_.empty())
+    task = DequeueRR();
+  //在争用的情况下，可能出现有一个task thread获得rr task，但另外一个没获取到，所以需要检查
+  if (task != NULL)
+    return task;
+  task = DequeuePI();
+
   return task;
 }
 
@@ -102,6 +146,7 @@ static void* task_processing_thread(void *para)
 
     //执行任务
     task_process(task);
+    Free(task);
   }
 
   return NULL;
