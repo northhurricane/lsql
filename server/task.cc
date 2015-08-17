@@ -133,22 +133,28 @@ Thread* TaskManager::BuildThreadsInfo(uint32_t number)
   return threads;
 }
 
-static void* task_processing_thread(void *para)
+static int task_processing_thread(Thread *thread)
 {
-  Thread *thread = (Thread*)para;
+  void *para = thread->para();
+
+  lsqld_thread_set_current(thread);
 
   while (true)
   {
     task_t *task = TaskManager::Dequeue();
     cout << "task gotten";
 
-    //判断是否是退出指令
+    //判断是否退出
+    if (thread->stop_thread())
+    {
+      //线程退出
+    }
 
     //执行任务
     task_process(task);
     Free(task);
   }
 
-  return NULL;
+  return 0;
 }
 

@@ -4,7 +4,12 @@
 #include <pthread.h>
 #include <stdint.h>
 
-typedef void *(*lthread_function_t) (void *);
+//#ifdef __LSQL_LINUX
+#define __LTLS__ __thread
+//#else
+//#endif
+
+typedef int (*lthread_function_t) (void *);
 typedef pthread_t lthread_t;
 
 #define THREAD_SUCCESS (0)
