@@ -57,9 +57,36 @@ task_process_message(Connection *conn)
 }
 
 void
+task_process_pi(Task *task)
+{
+  Connection *conn = (Connection*)(task->content);
+  conn->Reciver();
+  if (!conn->Valid())
+  {
+    return ;
+  }
+  task_process_message(conn);
+}
+
+void
+task_process_rr(Task *task)
+{
+}
+
+void
 task_process(const task_t *task)
 {
   //process message
+  switch (task->type)
+  {
+  case TASK_PI:
+    break;
+  case TASK_RR:
+    break;
+  default:
+    //assert(false);
+  }
+
   if (task->type == TASK_PROCESS_MESSAGE)
   {
     //recive request message
@@ -70,6 +97,5 @@ task_process(const task_t *task)
       //连接无效，关闭连接
       return ;
     }
-    //process message
   }
 }

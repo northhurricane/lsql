@@ -14,9 +14,8 @@ class Thread;
 enum TaskType_e
 {
   TASK_NONE = 0,
-  TASK_PI = 1,
-  TASK_RR = 2,
-  TASK_PROCESS_MESSAGE
+  TASK_PI = 1,  //客户端的请求的任务
+  TASK_RR = 2,  //服务器端以完成的任务
 };
 
 struct task_struct

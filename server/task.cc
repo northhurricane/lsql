@@ -152,7 +152,7 @@ static int task_processing_thread(Thread *thread)
 
     //执行任务
     task_process(task);
-    Free(task);
+    TaskManager::Free(task);
   }
 
   return 0;
