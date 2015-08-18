@@ -5,6 +5,7 @@
 #include "lmessage_prepare.h"
 #include "lmessage_execute.h"
 #include "sql_process.h"
+#include "llog.h"
 
 static void
 task_authenticate(lmessage_login_request_t *request)
@@ -23,11 +24,17 @@ task_process_login(Connection *connection, Message *message)
 static void
 task_process_execution(Session *session, Message *message)
 {
+  llog_trace("task_process_execution", "task_process_execution 1");
   lmessage_execute_request_t execute_reques;
   lmessage_execute_request_read(message, &request);
+
+  //todo : 判断是否存在参数，读取传入的参数
+
   if (request.exec_direct)
   {
+    //to do : 读取语句，生成计划
   }
+  //to do : 执行命令
 }
 
 static void
