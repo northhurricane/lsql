@@ -14,6 +14,9 @@ int lsql_compile(parse_head_t *head, VProgram **program)
   case PARSE_SELECT:
     return lsql_compile_select((parse_select_t*)head, program);
 
+  case PARSE_INSERT:
+    return lsql_compile_insert((parse_
+
   default:
     return -1;
   }

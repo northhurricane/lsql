@@ -157,65 +157,17 @@ public :
   }
 };
 
-class VMSQL;
-
-/*每条sql将被转化为一个program。每个program都由若干的function组成*/
-class VProgram
+/*
+完成如下功能：
+1、初始化vm系统。如vm的运行线程等
+2、进行虚拟机程序执行的调度。
+3、
+*/
+class VMManager
 {
 public :
-  void Run(VProcess *process);
-
-  uint32_t function_amount() {return function_amount_;}
-  bool Link(VFunction *entrance);
-
-  /*
-    将生成的可运行的SQL对象进行绑定
-   */
-  bool BindSql(VMSQL *sql);
-  VFunction *entrance() { return entrance_; }
-  VProgram();
-
-private :
-  uint32_t  function_amount_; //程序中的函数个数
-  VFunction *entrance_;
-  VMSQL *vmsql_;
-
-  bool GenerateFunctionSerial(VFunction *function);
-
-};
-
-/* VProgram运行时需要一个环境。这个环境就是VProcess。
-   通过VProcess完成一个事情，模拟进程，具备操作系统中进程的特性。
-   从而达到代码和运行时数据的分离。VProgram对应代码，VProcess对应运行数据。
-
-   Todo : 虚拟进程的信息可以分类，各函数的数据空间，进程的运行状态
-*/
-class VProcess
-{
-public:
-  void Run(); //相当于代码运行
-  void Initialize(VProgram *program); //相当于代码载入
-  void Deinitialize(); //相当于代码退出，清理环境
-
-  VFScene *GetScene(uint32_t serial)
-  {
-    lassert(serial < scenes_amount_);
-
-    return scenes_[serial];
-  }
-
-  Memory *memory() { return memory_; }
-  uint16_t rows_array_size() { return rows_array_size_; }
-
-private:
-  VProgram *program_; /*虚拟机所运行的program*/
-  AutoHeap *memory_; /*运行中所使用的内存，在进程结束后统一释放*/
-  uint32_t scenes_amount_; /*scenes数组长度，与program的function_amount_相同*/
-  VFScene **scenes_; /*一个program不会有太多function，所以使用一个指针数组为每一个function保存现场环境。通过每个function的序列号（serial_）来访问*/
-
-  uint16_t rows_array_size_; /* 该进程中VFData中行数组的大小 */
-
-  bool InitializeFunctionScene(VFunction *function);
+  static void RunProgram();
+  
 };
 
 #endif //LSQL_SERVER_VM_VM_H_

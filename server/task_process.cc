@@ -32,9 +32,14 @@ task_process_execution(Session *session, Message *message)
 
   if (request.exec_direct)
   {
-    //to do : 读取语句，生成计划
+    //to do : 从消息中读取SQL语句，将SQL语句生成计划
+    char * sql = NULL;
+    uint32_t sql_len = 0;
+    sql_process_build(NULL, sql, sql_len);
   }
+
   //to do : 执行命令
+  sql_process_execute(NULL);
 }
 
 static void
