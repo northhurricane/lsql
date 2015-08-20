@@ -3,7 +3,10 @@
 
 class VMSQL;
 
-/*每条sql将被转化为一个program。每个program都由若干的function组成*/
+/*
+VMSQL可以看作是C中编译好的obj文件，转换为VProgram相当于进行一次链接。
+为各个函数生成了在虚拟程序中的位置信息，在虚拟程序的运行中，这些位置信息将提供和虚拟函数对应的定位功能。
+*/
 class VProgram
 {
 public :

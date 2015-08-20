@@ -1,25 +1,6 @@
 #include "vm.h"
 #include "vmsql.h"
 
-/***************VFunction*****************/
-#define SERIAL_UNDEFINE 0xFFFFFFFF
-VFunction::VFunction()
-{
-  serial_ = SERIAL_UNDEFINE;
-  first_ = NULL;
-  second_ = NULL;
-}
-
-
-/***************VProcess*****************/
-
-/***************VProgram*****************/
-VProgram::VProgram()
-{
-  entrance_ = NULL;
-  function_amount_ = 0;
-}
-
 void
 VProgram::Run(VProcess *process)
 {
