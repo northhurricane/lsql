@@ -1,5 +1,6 @@
 #include "vm.h"
 #include "vmsql.h"
+#include "lsqld_thread.h"
 
 void
 VProgram::Run(VProcess *process)
@@ -40,3 +41,30 @@ VProgram::BindSql(VMSQL *sql)
 
   return true;
 }
+
+
+static int vm_running_thread(Thread *thread)
+{
+  void *para = thread->para();
+
+  lsqld_thread_set_current(thread);
+
+  while (true)
+  {
+    task_t *task = TaskManager::Dequeue();
+    cout << "task gotten";
+
+    //判断是否退出
+    if (thread->stop_thread())
+    {
+      //线程退出
+    }
+
+    //执行任务
+    task_process(task);
+    TaskManager::Free(task);
+  }
+
+  return 0;
+}
+

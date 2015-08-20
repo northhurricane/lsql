@@ -93,6 +93,14 @@ public :
   }
 };
 
+class Thread;
+
+class VM
+{
+private :
+  Thread *thread_;
+}
+
 /*
 完成如下功能:
 1、初始化vm系统。如vm的运行线程等
@@ -111,8 +119,10 @@ private :
   //设想功能
   static void AddVM() {}
   static void RemoveVM() {}
-  static list <VM*>;
-  static 
+
+  //VM链表
+  //运行中
+  //空闲中
 };
 
 #endif //LSQL_SERVER_VM_VM_H_
