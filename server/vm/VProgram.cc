@@ -1,4 +1,5 @@
 #include "VProgram.h"
+#include "VProcess.h"
 
 VProgram::VProgram()
 {
@@ -6,4 +7,8 @@ VProgram::VProgram()
   function_amount_ = 0;
 }
 
+VProgram::Run(VProcess *process)
+{
+  process->CallFunc(entrance_);
+}
 

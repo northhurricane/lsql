@@ -1,7 +1,7 @@
 #include "VProcess.h"
 
 void
-VProcess::Run()
+VProcess::Start()
 {
   program_->Run(this);
 }
@@ -40,3 +40,11 @@ VProcess::InitializeFunctionScene(VFunction *function)
     InitializeFunctionScene(function->second());
 }
 
+void
+VProcess::CallFunc(VFunction *func)
+{
+  //当前函数入栈
+  StackPushFunc(func);
+  func->Run();
+  StackPopFunc();
+}

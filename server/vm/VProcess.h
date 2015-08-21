@@ -11,10 +11,12 @@ VProgram运行时需要一个环境。这个环境就是VProcess。
 Todo : 虚拟进程的信息可以分类，各函数的数据空间，进程的运行状态
 */
 
+class VFunction;
+
 class VProcess
 {
 public:
-  void Run(); //相当于代码运行
+  void Start(); //相当于代码运行
   void Initialize(VProgram *program); //相当于代码载入
   void Deinitialize(); //相当于代码退出，清理环境
 
@@ -28,13 +30,20 @@ public:
   Memory *memory() { return memory_; }
   uint16_t rows_array_size() { return rows_array_size_; }
 
+  void CallFunc();
+
 private:
   VProgram *program_; /*虚拟机所运行的program*/
   AutoHeap *memory_; /*运行中所使用的内存，在进程结束后统一释放*/
   uint32_t scenes_amount_; /*scenes数组长度，与program的function_amount_相同*/
   VFScene **scenes_; /*一个program不会有太多function，所以使用一个指针数组为每一个function保存现场环境。通过每个function的序列号（serial_）来访问*/
-
   uint16_t rows_array_size_; /* 该进程中VFData中行数组的大小 */
+
+  //运行时信息
+  //函数调用堆栈
+  list<VFunction*> stack;
+  //当前执行函数
+  VFunction *current_func_;
 
   bool InitializeFunctionScene(VFunction *function);
 };

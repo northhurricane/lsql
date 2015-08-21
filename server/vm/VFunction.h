@@ -34,10 +34,12 @@ public :
 protected :
   VFData  *data_;      //在函数执行时填写数据的地方，和VF的coldef一致
 
-  bool over_;          //该函数是否取完数据。true表示所有数据都已经返回，false表示还可以继续返回数据
+  bool over_;          //该函数是否取完数据。true表示所有数据都已经返回，false表示还可以继续返回数据。在first函数执行后，如果over被设置，则说明无需后续的函数执行（更多细节待定）
   bool first_over_;    //第一函数是否结束
   bool second_over_;   //第二函数是否结束
 };
+
+#define VF_SERIAL_UNDEFINE 0xFFFFFFFF
 
 /*函数*/
 class VFunction
@@ -46,12 +48,20 @@ public :
   //函数运行
   virtual vfreturn_t Run(VProcess *process) = 0;
 
+  /*函数执行*/
+  void Execute(VProcess *process);
+
   //创建函数运行时所需的运行现场，在虚拟进程的函数运行前，被调用
   virtual VFScene *CreateScene(VProcess *process) = 0;
 
   //销毁函数运行时所需的运行现场，在虚拟进程结束时，进行销毁
   virtual void DestroyScene(VProcess *process) = 0;
   VFunction() ;
+
+protected:
+  //
+  virtual void ActionAfterFirstFunc() = 0;
+  vritual void ActionAfterSecondFunc() = 0;
 
 private:
   /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
