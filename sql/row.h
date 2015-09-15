@@ -1,23 +1,104 @@
 #ifndef LSQL_SQL_ROW_H_
 #define LSQL_SQL_ROW_H_
 
-#include "field.h"
+#include "lendian.h"
+#include "column.h"
+#include "sqltype.h"
+
+using namespace std;
+
 
 /*内存中的行数据，由多个内存列构成，只保存数据。数据的元信息不在此处保存*/
+/*lsql的row layout*/
+/*
+row length/nullflag/fix length fields/variable length fields
+row length:2字节长，行的长度
+nullflag:每个列占用一个位，0表示null，1表示not null
+fix length fields:定常数据的存储空间
+variable length fields:变长数据的存储空间。由2字节长度和实际数据构成
+*/
+
+#define NULL_FLAG     (0)
+#define NOT_NULL_FLAG (1)
+
+inline bool
+is_null(uint8_t flag)
+{
+  return flag == NULL_FLAG;
+}
+
+inline uint16_t
+row_read_length(void *row)
+{
+  return lendian_read_uint16(row);
+}
+
+inline void
+row_write_length(void *row, uint16_t length)
+{
+  lendian_write_uint16(row, length);
+}
+
+/*field在row中的信息*/
+struct row_field_struct
+{
+  bool is_null_;     //列是否为null
+  uint16_t offset_;  //在行中的偏移
+
+  void set_is_null(bool is_null) {is_null_ = is_null;}
+  bool is_null() { return is_null_; }
+
+  void set_offset(uint16_t offset) { offset_ = offset; }
+  uint16_t offset() { return offset_; }
+};
+typedef struct row_field_struct row_field_t;
 
 /*该结构中保存所有数据内容，字符数据将保存在field结构中*/
-struct row_struct
+struct row_fields_struct
 {
-  uint16_t amount;  //列数目
+  vector<row_field_t> fields; //列信息
 };
-typedef struct row_struct row_t;
+typedef struct row_fields_struct row_fields_t;
 
-/*字符数据不进行保存，只有指向字符数据的指针。对于没有字符数据或者字符数据固定的情况，减少空间使用*/
-struct row_ref_struct
+/*
+  从行数据中读取各列的信息，如数据是否为null，如果不为null，数据所在偏移
+  return : > 0 bytes read from row.
+           = 0 error occured when read from row
+*/
+inline lret_t
+row_read_fields(void *row, row_fields_t *fields, columns_def_t *colsdef)
 {
-  uint16_t amount;      //列数目
-};
-typedef struct row_ref_struct row_ref_t;
+  uint16_t columns_number = colsdef->columns.size();
+  uint16_t fix_len_data_offset = 0;
+  uint16_t var_len_data_offset = 0;
+  uint8_t  null_flag = NULL_FLAG;
+  row_field_t field = {false, 0};
+
+  for (int i =0; i < columns_number; i++)
+  {
+    coldef_t coldef = colsdef->columns.at(i);
+
+    //read null flag
+    if (is_null(null_flag))
+    {
+      field.set_is_null(true);
+    }
+    else
+    {
+      //read data
+      if (sqltype_is_fix(coldef.type))
+      {
+        //在定长区域寻找数据
+        field.set_offset(fix_len_offset);
+      }
+      else
+      {
+        //在变长区域寻找数据
+      }
+    }
+    
+  }
+}
 
 #endif //LSQL_SQL_ROW_H_
 

@@ -1,0 +1,7 @@
+#ifndef LSQL_SQL_SQL_LIMIT_H_
+#define LSQL_SQL_SQL_LIMIT_H_
+
+#define SQL_MAX_FIELDS    (1024)
+
+#endif //LSQL_SQL_SQL_LIMIT_H_
+
