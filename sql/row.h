@@ -16,6 +16,15 @@ row length:2字节长，行的长度
 nullflag:每个列占用一个位，0表示null，1表示not null
 fix length fields:定常数据的存储空间
 variable length fields:变长数据的存储空间。由2字节长度和实际数据构成
+
+例如 
+create table t1(f1 int, f2 varchar(10));
+insert into t1 values (1,'123');
+所对应的为
+row length:
+nullflag:占用1个字节，保存f1和f2的是否为空标识
+fix lenght fields:占用4个字节，保存f1的数据
+variable length fields:占用5个字节，2字节为长度，3字节为数据内容
 */
 
 #define NULL_FLAG     (0)
@@ -69,14 +78,22 @@ inline lret_t
 row_read_fields(void *row, row_fields_t *fields, columns_def_t *colsdef)
 {
   uint16_t columns_number = colsdef->columns.size();
-  uint16_t fix_len_data_offset = 0;
-  uint16_t var_len_data_offset = 0;
+  uint16_t fix_offset = 0;  //固定长度列数据的偏移
+  uint16_t var_offset = 0;  //变长数据列的偏移
+  uint16_t fix_len;  //固定列数据长度
+  uint16_t var_len;  //变长列数据长度
   uint8_t  null_flag = NULL_FLAG;
-  row_field_t field = {false, 0};
+  row_field_t field;
+  uint8_t *buffer = (uint8_t*)row;
 
+  //固定长度数据的空间
+  fix_offset += colsdef->columns_nullflag_storage_space() + LINT16_SIZE;
+  
   for (int i =0; i < columns_number; i++)
   {
     coldef_t coldef = colsdef->columns.at(i);
+
+    field = {false, 0};
 
     //read null flag
     if (is_null(null_flag))
@@ -86,14 +103,20 @@ row_read_fields(void *row, row_fields_t *fields, columns_def_t *colsdef)
     else
     {
       //read data
-      if (sqltype_is_fix(coldef.type))
+      if (sqltype_is_storage_fix(coldef.type))
       {
         //在定长区域寻找数据
-        field.set_offset(fix_len_offset);
+        field.set_offset(fix_offset);
+        fix_len = sqltype_storage_fix_size(coldef.type);
+        fix_offset += fix_len;
       }
       else
       {
         //在变长区域寻找数据
+        field.set_offset(var_offset);
+        var_len = lendian_read_uint16(buffer + var_offset);
+        var_offset += LINT16_SIZE;
+        var_offset += var_len;
       }
     }
     

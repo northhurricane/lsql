@@ -95,7 +95,17 @@ struct columns_def_struct
     uint32_t column_number = columns.size();
     if (column_number == 0)
       return 0;
-    return column_number % * + 1;
+    return column_number % 8 + 1;
+  }
+
+  uint16_t columns_fix_storage_space()
+  {
+    uint16_t fix_columns_size = 0;
+    for (int i = 0; i < colunms.size(); i++)
+    {
+      coldef_t coldef = columns.at(i);
+      fix_columns_size += sqltype_fix_storage_size(coldef.type);
+    }
   }
 
   uint16_t fix_storage_size; //固定长度字段所占的存储空间
