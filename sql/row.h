@@ -128,7 +128,21 @@ row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
 }
 
 //结构化行
+struct row_structed_struct
+{
+  uint16_t fields_number;
+  //fields
+  //fields pointer
+};
 
+struct row_structed_batch_struct
+{
+  uint16_t fields_number;
+  uint16_t batch_number;
+  //batch size
+  //fields array pointer
+  //fields array
+};
 
 #endif //LSQL_SQL_ROW_H_
 

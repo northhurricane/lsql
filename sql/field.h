@@ -45,12 +45,5 @@ typedef field_ref_union field_ref_t;
 #define FIELD_ALL_SIZE (sizeof(field_all_t[1]))
 #define FIELD_REF_SIZE (sizeof(field_ref_t[1]))
 
-void field_set_data(field_type_t field_type, void *field
-                    , sqltype_t sqltype, void *data, uint16_t length);
-
-void field_add(
-  field_type_t l_type, sqltype_t l_sqltype, void *l_field
-  ,field_type_t r_type, sqltype_t r_sqltype, void *r_filed);
-
 #endif //LSQL_SQL_FIELD_H_
 
