@@ -9,7 +9,12 @@ using namespace std;
 
 
 /*内存中的行数据，由多个内存列构成，只保存数据。数据的元信息不在此处保存*/
-/*lsql的row layout*/
+/*
+行分为原始行（raw row）和结构化行（struct row）
+原始行以二进制格式存储数据，其结构如下描述
+结构化行通过结构和数据类型存储数据
+*/
+/*lsql的原始行布局（raw row layout）*/
 /*
 row length/nullflag/fix length fields/variable length fields
 row length:2字节长，行的长度
@@ -70,12 +75,12 @@ struct row_fields_struct
 typedef struct row_fields_struct row_fields_t;
 
 /*
-  从行数据中读取各列的信息，如数据是否为null，如果不为null，数据所在偏移
+  从原始行数据中读取各列的信息，如数据是否为null，如果不为null，数据所在偏移
   return : > 0 bytes read from row.
            = 0 error occured when read from row
 */
 inline lret_t
-row_read_fields(void *row, row_fields_t *fields, columns_def_t *colsdef)
+row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
 {
   uint16_t columns_number = colsdef->columns.size();
   uint16_t fix_offset = 0;  //固定长度列数据的偏移
@@ -119,9 +124,11 @@ row_read_fields(void *row, row_fields_t *fields, columns_def_t *colsdef)
         var_offset += var_len;
       }
     }
-    
   }
 }
+
+//结构化行
+
 
 #endif //LSQL_SQL_ROW_H_
 

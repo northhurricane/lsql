@@ -6,11 +6,11 @@
 typedef int16_t sqltype_t;
 
 #define LSQL_TYPE_INVALID   0
-#define LSQL_TYPE_CHAR      1   //定长字符类型，内部存储为变长
-#define LSQL_TYPE_INT       2   //4字节长度整形
+#define LSQL_TYPE_INT       1   //4字节长度整形
+#define LSQL_TYPE_CHAR      2   //定长字符类型，内部存储为变长
 #define LSQL_TYPE_VARCHAR   3   //变长字符类型
 
-#define LSQL_TYPE_INT_STORAGE_SIZE (
+#define LSQL_TYPE_INT_STORAGE_SIZE (LINT32_SIZE)
 
 #define LSQL_TYPE_INT_PREC  10
 #define LSQL_TYPE_INT_SCALE 0

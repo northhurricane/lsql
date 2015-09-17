@@ -108,7 +108,6 @@ struct columns_def_struct
     }
   }
 
-  uint16_t fix_storage_size; //固定长度字段所占的存储空间
   vector<coldef_t> columns;
 };
 typedef struct columns_def_struct columns_def_t;
