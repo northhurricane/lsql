@@ -51,7 +51,7 @@ row_read_length(row_raw_t row)
 }
 
 inline void
-row_write_length(void *row, uint16_t length)
+row_write_length(row_raw_t row, uint16_t length)
 {
   lendian_write_uint16(row, length);
 }
@@ -83,7 +83,8 @@ typedef struct row_fields_struct row_fields_t;
            = 0 error occured when read from row
 */
 inline uint16_t
-row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
+row_fields_from_raw(row_raw_t row
+                    , row_fields_t *fields, columns_def_t *colsdef)
 {
   uint16_t columns_number = colsdef->columns.size();
   uint16_t fix_offset = 0;  //固定长度列数据的偏移
