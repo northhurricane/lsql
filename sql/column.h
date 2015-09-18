@@ -4,6 +4,7 @@
 #include "lsql.h"
 #include "lendian.h"
 #include "ltypedef.h"
+#include <vector>
 
 using namespace std;
 
@@ -19,7 +20,7 @@ typedef struct coldef_struct coldef_t;
 
 #define COLDEF_NET_HEAD (0)
 #define COLDEF_NET_TYPE (COLDEF_NET_HEAD)
-#define COLDEF_NET_PREC (COLDEF_NETTYPE + LINT16_SIZE)
+#define COLDEF_NET_PREC (COLDEF_NET_TYPE + LINT16_SIZE)
 #define COLDEF_NET_SCALE (COLDEF_NET_PREC + LINT16_SIZE)
 #define COLDEF_NET_NULLABLE (COLDEF_NET_SCALE + LINT16_SIZE)
 #define COLDEF_NET_TAIL (COLDEF_NET_NULLABLE + LINT8_SIZE)
@@ -63,7 +64,7 @@ n2coldef(coldef_t *def, void *buffer)
 
   def->type = lendian_read_uint16(buffer_inner);
   buffer_inner += LINT16_SIZE;
-  def->precession = lendian_read_uint16(buffer_inner);
+  def->precision = lendian_read_uint16(buffer_inner);
   buffer_inner += LINT16_SIZE;
   def->scale = lendian_read_uint16(buffer_inner);
   buffer_inner += LINT16_SIZE;
@@ -101,13 +102,14 @@ struct columns_def_struct
   uint16_t columns_fix_storage_space()
   {
     uint16_t fix_columns_size = 0;
-    for (int i = 0; i < colunms.size(); i++)
+    for (int i = 0; i < columns.size(); i++)
     {
       coldef_t coldef = columns.at(i);
-      fix_columns_size += sqltype_fix_storage_size(coldef.type);
+      fix_columns_size += sqltype_storage_fix_size(coldef.type);
     }
   }
 
+  uint16_t fix_storage_size;
   vector<coldef_t> columns;
 };
 typedef struct columns_def_struct columns_def_t;

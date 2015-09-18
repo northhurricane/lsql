@@ -3,7 +3,7 @@
 
 #include "lendian.h"
 #include "column.h"
-#include "sqltype.h"
+#include "sqltypes.h"
 
 using namespace std;
 
@@ -35,6 +35,9 @@ variable length fields:占用5个字节，2字节为长度，3字节为数据内
 #define NULL_FLAG     (0)
 #define NOT_NULL_FLAG (1)
 
+
+typedef void *row_raw_t;
+
 inline bool
 is_null(uint8_t flag)
 {
@@ -42,7 +45,7 @@ is_null(uint8_t flag)
 }
 
 inline uint16_t
-row_read_length(void *row)
+row_read_length(row_raw_t row)
 {
   return lendian_read_uint16(row);
 }
@@ -79,7 +82,7 @@ typedef struct row_fields_struct row_fields_t;
   return : > 0 bytes read from row.
            = 0 error occured when read from row
 */
-inline lret_t
+inline uint16_t
 row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
 {
   uint16_t columns_number = colsdef->columns.size();
@@ -98,7 +101,8 @@ row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
   {
     coldef_t coldef = colsdef->columns.at(i);
 
-    field = {false, 0};
+    field.set_is_null(false);
+    field.set_offset(0);
 
     //read null flag
     if (is_null(null_flag))
@@ -130,18 +134,15 @@ row_fields_from_raw(void *row, row_fields_t *fields, columns_def_t *colsdef)
 //结构化行
 struct row_structed_struct
 {
-  uint16_t fields_number;
-  //fields
-  //fields pointer
+  field_t *fields_ptr[]; //字段数组，
+  uint8_t *fields; //字段的存储空间
 };
+typedef struct row_structed_struct row_structed_t;
 
 struct row_structed_batch_struct
 {
   uint16_t fields_number;
   uint16_t batch_number;
-  //batch size
-  //fields array pointer
-  //fields array
 };
 
 #endif //LSQL_SQL_ROW_H_
