@@ -10,15 +10,15 @@ using namespace std;
 
 /*内存中的行数据，由多个内存列构成，只保存数据。数据的元信息不在此处保存*/
 /*
-行分为原始行（raw row）和结构化行（struct row）
-原始行以二进制格式存储数据，其结构如下描述
-结构化行通过结构和数据类型存储数据
+行分为两种，原始行（raw row）和结构化行（struct row）
+原始行以二进制格式存储数据，通常这是永久保存在文件中的格式，其结构如下描述
+结构化行通过结构和数据类型存储数据，这是在程序运行中使用
 */
 /*lsql的原始行布局（raw row layout）*/
 /*
 row length/nullflag/fix length fields/variable length fields
 row length:2字节长，行的长度
-nullflag:每个列占用一个位，0表示null，1表示not null
+nullflag:每个列占用一个位，0表示null，1表示not null。
 fix length fields:定常数据的存储空间
 variable length fields:变长数据的存储空间。由2字节长度和实际数据构成
 
