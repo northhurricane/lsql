@@ -43,18 +43,40 @@ inline void lendian_write_uint8(void *target, uint8_t value)
   *((uint8_t*)target) = value;
 }
 
+inline int8_t lendian_read_int8(void *source)
+{
+  return *((int8_t*)source);
+}
+
+inline void lendian_write_int8(void *target, int8_t value)
+{
+  *((int8_t*)target) = value;
+}
+
 inline uint16_t lendian_read_uint16(void *source)
 {
 #ifdef LITTLE_ENDIAN
   return *((uint16_t*)source);
 #else
-  
 #endif
 }
 
 inline void lendian_write_uint16(void *target, uint16_t value)
 {
   *((uint16_t*)target) = value;
+}
+
+inline int16_t lendian_read_int16(void *source)
+{
+#ifdef LITTLE_ENDIAN
+  return *((int16_t*)source);
+#else
+#endif
+}
+
+inline void lendian_write_int16(void *target, int16_t value)
+{
+  *((int16_t*)target) = value;
 }
 
 inline uint32_t lendian_read_uint32(void *source)
@@ -67,6 +89,16 @@ inline void lendian_write_uint32(void *target, uint32_t value)
   *((uint32_t*)target) = value;
 }
 
+inline int32_t lendian_read_int32(void *source)
+{
+  return *((int32_t*)source);
+}
+
+inline void lendian_write_int32(void *target, int32_t value)
+{
+  *((int32_t*)target) = value;
+}
+
 inline uint64_t lendian_read_uint64(void *source)
 {
   return *((uint64_t*)source);
@@ -75,6 +107,16 @@ inline uint64_t lendian_read_uint64(void *source)
 inline void lendian_write_uint64(void *target, uint64_t value)
 {
   *((uint64_t*)target) = value;
+}
+
+inline int64_t lendian_read_int64(void *source)
+{
+  return *((int64_t*)source);
+}
+
+inline void lendian_write_int64(void *target, int64_t value)
+{
+  *((int64_t*)target) = value;
 }
 
 inline float lendian_read_float(void *source)
