@@ -36,8 +36,13 @@
 */
 
 /*
+一、关于vm
+vm的概念类似cpu，vprogram可以在各个不同的vm上运行
 1、每个vm对象对应一个Thread对象，也就是没创建一个vm对象则创建一个线程，该线程进行
 2、vm对象用来记录VProgram的运行情况
+二、关于vos
+vm是运行资源，vos是管理这些资源。相当于操作系统，编译好的vprogram通过vos，在vm上进行运行。
+1、server启动，只有一个vos对象运行
 */
 
 using namespace std;
@@ -109,7 +114,7 @@ private :
 设想功能:
 1、可动态的增加/减少虚拟机，在线调节运行资源
 */
-class VMManager
+class VOS
 {
 public :
   static void Initialize();

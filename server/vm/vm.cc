@@ -51,9 +51,6 @@ static int vm_running_thread(Thread *thread)
 
   while (true)
   {
-    task_t *task = TaskManager::Dequeue();
-    cout << "task gotten";
-
     //判断是否退出
     if (thread->stop_thread())
     {
@@ -61,8 +58,6 @@ static int vm_running_thread(Thread *thread)
     }
 
     //执行任务
-    task_process(task);
-    TaskManager::Free(task);
   }
 
   return 0;
