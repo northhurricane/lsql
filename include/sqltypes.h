@@ -5,15 +5,21 @@
 
 typedef int16_t sqltype_t;
 
-#define LSQL_TYPE_INVALID   0
-#define LSQL_TYPE_INT       1   //4字节长度整形
-#define LSQL_TYPE_CHAR      2   //定长字符类型，内部存储为变长
-#define LSQL_TYPE_VARCHAR   3   //变长字符类型
+#define LSQL_TYPE_INVALID   (0)
+#define LSQL_TYPE_INT       (1)   //4字节长度整形
+#define LSQL_TYPE_CHAR      (2)   //定长字符类型，内部存储为变长
+#define LSQL_TYPE_VARCHAR   (3)   //变长字符类型
+#define LSQL_TYPE_SMALLINT  (4)
+#define LSQL_TYPE_TINYINT   (5)
+#define LSQL_TYPE_BIGINT    (6)
 
 #define LSQL_TYPE_INT_STORAGE_SIZE (LINT32_SIZE)
 
 #define LSQL_TYPE_INT_PREC  10
 #define LSQL_TYPE_INT_SCALE 0
+
+#define SIGNED_DEF   (0)
+#define UNSIGNED_DEF (1)
 
 //是否为定常数据类型
 inline bool sqltype_is_storage_fix(sqltype_t type)
