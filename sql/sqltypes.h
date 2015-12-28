@@ -12,6 +12,9 @@ typedef int16_t sqltype_t;
 #define LSQL_TYPE_SMALLINT  (4)
 #define LSQL_TYPE_TINYINT   (5)
 #define LSQL_TYPE_BIGINT    (6)
+#define LSQL_TYPE_DATE      (7)
+#define LSQL_TYPE_TIME      (8)
+#define LSQL_TYPE_DATETIME  (9)
 
 #define LSQL_TYPE_INT_STORAGE_SIZE (LINT32_SIZE)
 
