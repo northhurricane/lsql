@@ -66,6 +66,9 @@ ldt_current(lbdt_t *current)
   return 0;
 }
 
+/*
+  以微秒精度为精度，获取当前时间
+*/
 inline int
 ldt_current_micro(uint64_t *current)
 {
