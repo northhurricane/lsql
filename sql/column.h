@@ -4,16 +4,15 @@
 #include "lsql.h"
 #include "lendian.h"
 #include "ltypedef.h"
+#include "sqltypes.h"
 #include <vector>
 
 using namespace std;
 
 struct coldef_struct
 {
-  uint16_t type;  //SQL的类型
-  uint16_t precision; //对char类型来说就是定义的长度
-  uint16_t scale;     //和precision配合使用，说明精度。比如decimal(10,2)，precision为10，scale为2。参考sql的标准定义
-  bool     nullable;  //列是否可为null
+  sqltype_def_t type_def; //sql类型定义
+  bool nullable;  //列是否可为null
 };
 typedef struct coldef_struct coldef_t;
 #define COLDEF_SIZE (sizeof(coldef_t[1]))
