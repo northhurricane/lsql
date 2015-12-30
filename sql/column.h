@@ -17,71 +17,63 @@ struct coldef_struct
 typedef struct coldef_struct coldef_t;
 #define COLDEF_SIZE (sizeof(coldef_t[1]))
 
-#define COLDEF_NET_HEAD (0)
-#define COLDEF_NET_TYPE (COLDEF_NET_HEAD)
-#define COLDEF_NET_PREC (COLDEF_NET_TYPE + LINT16_SIZE)
-#define COLDEF_NET_SCALE (COLDEF_NET_PREC + LINT16_SIZE)
-#define COLDEF_NET_NULLABLE (COLDEF_NET_SCALE + LINT16_SIZE)
-#define COLDEF_NET_TAIL (COLDEF_NET_NULLABLE + LINT8_SIZE)
+#define COLDEF_HEAD (0)
+#define COLDEF_TYPEDEF (COLDEF_HEAD)
+#define COLDEF_NULLABLE (COLDEF_TYPEDEF + SQLTYPEDEF_STORAGE_SIZE)
+#define COLDEF_TAIL (COLDEF_NET_NULLABLE + LINT8_SIZE)
 
-#define COLDEF_NET_SIZE COLDEF_NET_TAIL
+#define COLDEF_STORAGE_SIZE COLDEF_NET_TAIL
 
 /*
-网络格式和结构之间的转换，n表示net
+存储和内存结构之间的转换
 */
+inline uint61_t
+coldef_storage_size()
+{
+  return COLDEF_STORAGE_SIZE;
+}
 /*
-  return : > 0 bytes used in buffer
-           = 0 error occured in writing to buffer
+  列定义内存结构转换为存储
+  返回值
+    存储的长度
 */
 inline uint16_t
-coldef2n(coldef_t def, void *buffer, int size)
+coldef2n(const coldef_t &def, void *buffer)
 {
-  if (size < COLDEF_NET_SIZE)
-    return 0;
-
-  char *buffer_inner = (char*)buffer;
-  lendian_write_uint16(buffer_inner, def.type);
-  buffer_inner += LINT16_SIZE;
-  lendian_write_uint16(buffer_inner, def.precision);
-  buffer_inner += LINT16_SIZE;
-  lendian_write_uint16(buffer_inner, def.scale);
-  buffer_inner += LINT16_SIZE;
+  uint8_t *buffer_inner = (uint8_t*)buffer;
+  buffer_inner += sqltypedef2n(def.type_def, buffer_inner);
   lendian_write_uint8(buffer_inner, def.nullable);
   buffer_inner += LINT8_SIZE;
 
-  return COLDEF_NET_SIZE;
+  return coldef_storage_size();
 }
 
 /*
-  return : > 0 bytes read from buffer
-           = 0 error occured in writing to buffer
+  列定义内存结构转换为存储
+  返回值
+    存储的长度
 */
 inline uint16_t
 n2coldef(coldef_t *def, void *buffer)
 {
   char *buffer_inner = (char*)buffer;
 
-  def->type = lendian_read_uint16(buffer_inner);
-  buffer_inner += LINT16_SIZE;
-  def->precision = lendian_read_uint16(buffer_inner);
-  buffer_inner += LINT16_SIZE;
-  def->scale = lendian_read_uint16(buffer_inner);
-  buffer_inner += LINT16_SIZE;
+  buffer_inner += n2sqltypedef(&def->type_def, buffer_inner);
   def->nullable = lendian_read_uint8(buffer_inner);
   buffer_inner += LINT8_SIZE;
 
-  return COLDEF_NET_SIZE;
+  return coldef_storage_size();
 }
 
 /*
-多列定义的组合，表的定义
+多列定义的组合
 */
 struct columns_def_struct
 {
   /*增加列定义*/
   void add_coldef(coldef_t coldef)
   {
-    if (sqltype_is_storage_fix(coldef.type))
+    if (sqltype_is_storage_fix(coldef.type_def.type))
     {
       uint16_t storage_size = sqltype_storage_fix_size(coldef.type);
       fix_storage_size += storage_size;
