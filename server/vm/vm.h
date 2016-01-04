@@ -38,8 +38,8 @@
 /*
 一、关于vm
 vm的概念类似cpu，vprogram可以在各个不同的vm上运行
-1、每个vm对象对应一个Thread对象，也就是没创建一个vm对象则创建一个线程，该线程进行
-2、vm对象用来记录VProgram的运行情况
+1、每个vm对象对应一个Thread对象，也就是每创建一个vm对象则创建一个线程，该线程进行获取vprogram进行运行
+2、vm对象用来代表thread的情况
 二、关于vos
 vm是运行资源，vos是管理这些资源。相当于操作系统，编译好的vprogram通过vos，在vm上进行运行。
 1、server启动，只有一个vos对象运行
@@ -105,29 +105,5 @@ class VM
 private :
   Thread *thread_;
 }
-
-/*
-完成如下功能:
-1、初始化vm系统。如vm的运行线程等
-2、进行虚拟机程序执行的调度。
-
-设想功能:
-1、可动态的增加/减少虚拟机，在线调节运行资源
-*/
-class VOS
-{
-public :
-  static void Initialize();
-  static void StartProgram(VProgram *program);
-
-private :
-  //设想功能
-  static void AddVM() {}
-  static void RemoveVM() {}
-
-  //VM链表
-  //运行中
-  //空闲中
-};
 
 #endif //LSQL_SERVER_VM_VM_H_
