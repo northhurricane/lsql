@@ -1,5 +1,5 @@
-#ifndef LSQL_SERVER_VM_VPROGRAM_H
-#define LSQL_SERVER_VM_VPROGRAM_H
+#ifndef LSQL_VPROGRAM_H
+#define LSQL_VPROGRAM_H
 
 class VMSQL;
 
@@ -10,6 +10,7 @@ VMSQL可以看作是C中编译好的obj文件，转换为VProgram相当于进行
 class VProgram
 {
 public :
+  /*进行代码运行*/
   void Run(VProcess *process);
 
   uint32_t function_amount() {return function_amount_;}
@@ -27,9 +28,10 @@ private :
   VFunction *entrance_;
   VMSQL *vmsql_;
 
+  /*根据VSQL对象完成*/
   bool GenerateFunctionSerial(VFunction *function);
 
 };
 
 
-#endif //LSQL_SERVER_VM_VPROGRAM_H
+#endif //LSQL_VPROGRAM_H
