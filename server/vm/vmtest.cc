@@ -18,7 +18,7 @@ void testInsert()
 
   //构造运行环境
   VProcess process;
-  process.Initialize(*program);
+  process.Initialize(&program);
   process.Run();
   process.Deinitialize();
 }
