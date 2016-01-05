@@ -50,7 +50,7 @@ private:
   list<VFunction*> stack;
   //当前执行函数
   VFunction *current_func_;
-
+  //初始化各个函数的运行环境
   bool InitializeFunctionScene(VFunction *function);
 };
 
