@@ -5,6 +5,7 @@
 
 class VSelect : public VSQL
 {
+  VSelect() { stmt_type_ = SQL_STATEMENT_SELECT; }
 };
 
 #endif //LSQL_VM_VSELECT_

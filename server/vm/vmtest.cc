@@ -5,6 +5,24 @@
 #include "vmexpr.h"
 #include "VFClusterScan.h"
 
+/*
+插入测试
+*/
+void testInsert()
+{
+  //insert into t1 values (1);
+  //构造运行程序
+  VProgram program;
+  VInsert ins;
+  program.Bind(&ins);
+
+  //构造运行环境
+  VProcess process;
+  process.Initialize(*program);
+  process.Run();
+  process.Deinitialize();
+}
+
 /*测试进行常量查询*/
 void testSelectConst()
 {
@@ -38,7 +56,9 @@ void testSelectConst()
 
   calc.set_first(&dummyTable);
 
-  bool success = program.Link(&calc);
+  VSeelect select;
+
+  bool success = program.Bind(&select);
 
   //虚拟进程运行
   VProcess process;

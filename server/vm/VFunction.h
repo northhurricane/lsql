@@ -59,7 +59,6 @@ public :
   VFunction() ;
 
 protected:
-  //
   virtual void ActionAfterFirstFunc() = 0;
   vritual void ActionAfterSecondFunc() = 0;
 
