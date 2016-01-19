@@ -1,47 +1,51 @@
 #include "lsql.h"
 #include "lmessage_login.h"
 
+void
+lmsg_login_req_head_write()
+{
+  lmsg_action_head_t head;
+  head.action_id = LMSG_ACTION_LOGIN;
+  head.result = 0;
+  head.info_num = 0;
+  head.session_id = 0;
+  head.stmt_id = 0;
+}
 
 lret
-lmessage_login_request_write(Message *message, lmessage_login_request_t *login)
+lmsg_login_req_write(Message *message, lmsg_login_req_t *req)
 {
-  //logic id
-  message->WriteLogicId(LMSG_LOGIC_ID_LOGIN);
+  uint8_t *buffer;
+  uint32_t buffer_size;
 
-  message->WriteUint32(login->version);
+  buffer_size = message->GetActBodyBuffer(&buffer_size);
+  NetWriteStream stream(buffer, buffer_size);
 
-  message->WriteUint32(login->user_length);
-  message->Write(login->user, login->user_length);
+  uint8_t *msg;
+  uint32_t msg_len;
 
-  message->WriteUint32(login->password_length);
-  message->Write(login->password, login->password_length);
+  msg = stream.FinishWriting(&msg_len);
+  message.WriteMsgBuffer(act_body, act_body_len);
 
   return LSQL_SUCCESS;
 }
 
 lret
-lmessage_login_request_read(Message *message, lmessage_login_request_t *login)
+lmsg_login_req_read(uint8_t *msg, uint32_t msg_len, lmsg_login_req_t *login)
 {
-  uint32_t size = 0;
-  uint32_t offset = 0;
-  uint8_t *buffer = message->ReadLogicBody(&size);
-
-  login->version = lendian_read_uint32(buffer + offset);
-  offset += sizeof(uint32_t);
-
-  login->user_length = lendian_read_uint32(buffer + offset);
-  offset += sizeof(uint32_t);
-  login->user = buffer + offset;
-  offset += login->user_length;
-
-  login->password_length = lendian_read_uint32(buffer + offset);
-  offset += sizeof(uint32_t);
-  login->password = buffer + offset;
-  offset += login->password_length;
-
-  lassert(offset == size);
-
   return LSQL_SUCCESS;
 }
 
+lret
+lmsg_login_resp_write(Message *message, lmsg_login_resp_t *resp)
+{
+  return LSQL_SUCCESS;
+}
+
+lret
+lmsg_login_resp_read(
+  uint8_t *msg, uint32_t msg_len, lmsg_login_resp_t *resp)
+{
+  return LSQL_SUCCESS;
+}
 
