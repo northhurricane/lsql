@@ -41,14 +41,17 @@ result:服务器返回结果。分为成功（SUCCESS），失败（FAIL）和�
 #define LMSG_LOGIC_HEAD_SIZE 128
 #define LMSG_HEAD_SIZE (LMSG_TRANSFER_HEAD_SIZE + LMSG_LOGIC_HEAD_SIZE)
 
+#define LMSG_MAX_BODY_LENGTH (LMSG_MAX_LENGTH - LMSG_TRANSFER_HEAD_SIZE)
+
 #define LMSG_TRANSFER_HEAD      0
 #define LMSG_TRANSFER_LENGTH    LMSG_TRANSFER_HEAD
 #define LMSG_TRANSFER_END       (LMSG_TRANSFER_LEN + sizeof(uint32_t))
 
 #define LMSG_LOGIC_HEAD      0
 #define LMSG_LOGIC_ID        LMSG_LOGIC_HEAD
-#define LMSG_
-#define LMSG_LOGIC_END       (LMSG_LOGIC_ID + sizeof(uint16_t))
+#define LMSG_SESSION_ID      (LMSG_LOGIC_ID + LINT16_SIZE)
+#define LMSG_STMT_ID         (LMSG_SESSION_ID + LINT64_SIZE)
+#define LMSG_LOGIC_END       (LMSG_STMT_ID + LINT64_SIZE)
 
 //logic id
 #define LMSG_LOGIC_ID_LOGIN 1
@@ -57,50 +60,76 @@ result:服务器返回结果。分为成功（SUCCESS），失败（FAIL）和�
 
 /* transfer head read/write*/
 /*LENGTH*/
-inline uint32_t lmsg_transfer_read_length(uint8_t *msg)
+inline uint32_t lmsg_transfer_read_length(uint8_t *msg_head)
 {
+  uint8_t *msg = msg_head;
   return lendian_read_uint32(msg + LMSG_TRANSFER_LENGTH);
 }
 
-inline void lmsg_transfer_write_length(uint8_t *msg, uint32_t length)
+inline void lmsg_transfer_write_length(uint8_t *msg_head, uint32_t length)
 {
+  uint8_t *msg = msg_head;
   lendian_write_uint32(msg + LMSG_TRANSFER_LENGTH, length);
 }
 
 /* logic head read/write*/
 /*ID 用于标识当前需要处理的逻辑*/
-inline uint16_t lmsg_read_logic_id(uint8_t *msg)
+inline uint16_t lmsg_read_logic_id(uint8_t *msg_head)
 {
+  uint8_t *msg = msg_head;
   return lendian_read_uint16(msg);
 }
 
-inline void lmsg_write_logic_id(uint8_t *msg, uint16_t id)
+inline void lmsg_write_logic_id(uint8_t *msg_head, uint16_t id)
 {
+  uint8_t *msg = msg_head;
   lendian_write_uint16(msg, id);
 }
 
-class Vio;
+inline uint64_t lmsg_read_session_id(uint8_t *msg_head)
+{
+  uint8_t *msg = msg_head + LMSG_SESSION_ID;
+  return lendian_read_uint64(msg);
+}
+
+inline void lmsg_write_session_id(uint8_t *msg_head, uint64_t session_id)
+{
+  uint8_t *msg = msg_head + LMSG_SESSION_ID;
+  lendian_write_uint64(msg, session_id);
+}
+
+inline uint64_t lmsg_read_stmt_id(uint8_t *msg_head)
+{
+  uint8_t *msg = msg_head + LMSG_SESSION_ID;
+  return lendian_read_uint64(msg);
+}
+
+inline void lmsg_write_stmt_id(uint8_t *msg_head, uint64_t stmt_id)
+{
+  uint8_t *msg = msg_head + LMSG_STMT_ID;
+  lendian_write_uint64(msg, stmt_id);
+}
+
+class CommPort;
 
 #define LMSG_BUFFER_SIZE (1024 * 16)
 class Message
 {
 private :
-  uint32_t transfer_length_;  //total message length recieved
-  uint32_t logic_length_;   //bussiness logic part length
-  uint8_t buffer_fast_[LMSG_BUFFER_SIZE];
-  uint8_t *buffer_;
+  uint8_t  buffer_fast_[LMSG_BUFFER_SIZE];
+  uint32_t msg_length_;
+  uint8_t  *buffer_;
   uint32_t buffer_size_;
-  uint8_t *transfer_head_;
-  uint8_t *logic_head_;
-  uint8_t *logic_body_;
-  uint32_t offset_;
 
-  void SetBuffer(uint8_t *buffer, uint32_t buffer_size)
+  void SetBuffer(uint8_t *buffer, uint32_t buffer_size_)
   {
     buffer_ = buffer;
     buffer_size_ = buffer_size;
-    transfer_head_ = buffer;
-    logic_head_ = buffer + LMSG_TRANSFER_HEAD_SIZE;
+  }
+
+  void Reset()
+  {
+    msg_length_ = 0;
   }
 
 public :
@@ -111,106 +140,65 @@ public :
 
   ~Message()
   {
-    if (buffer_fast_ != buffer_)
-      lfree(buffer_);
+    if (buffer_ != buffer_fast_)
+    {
+      //TODO:释放分配的内存
+    }
   }
 
-  lret Recieve(Vio *vio)
+  //拼装好的消息写入消息对象
+  lret WriteMsgBuffer(uint8_t *msg, uint32_t msg_len)
   {
-    int r = vio->Recieve(buffer_, buffer_size_);
-
-    if (r < 0)
-      return LSQL_ERROR;
-
-    if (r == 0)
+    if ((buffer_ + LMSG_TRANSFER_HEAD_SIZE) == data)
     {
-      transfer_length_ = 0;
-      return LSQL_SUCCESS;
+      //TODO:使用的是对象提供的缓冲区
     }
+    else
+    {
+      //TODO:重新分配内存
+    }
+    return LSQL_SUCCESS;
+  }
+
+  //获取消息的缓冲区，用于填充消息
+  uint8_t *GetMsgBuffer(uint32_t *buffer_size)
+  {
+    *buffer_size = buffer_size_;
+    return buffer_ + LMSG_TRANSFER_HEAD_SIZE;
+  }
+
+  //获取填写的消息
+  uint8_t* GetMsg(uint32_t *msg_length)
+  {
+    *msg_length = msg_length;
+    return buffer_ + LMSG_TRANSFER_HEAD_SIZE;
+  }
+
+  //接受消息
+  lret Recieve(CommPort *port)
+  {
+    int r = port->Recieve(buffer_, buffer_size_);
+
+    if (r <= 0)
+      return LSQL_ERROR;
 
     if (r > LMSG_MAX_LENGTH)
-    {
       return LSQL_ERROR;
-    }
 
-    transfer_length_ = lmsg_transfer_read_length(transfer_head_);
     if (r > buffer_size_)
     {
-      //重新分配内存空间，并接收全部数据
+      //TODO:重新分配内存空间，并接收全部数据
     }
 
-    logic_length_ = transfer_length_ - LMSG_HEAD_SIZE;
-  }
+    //TODO:填写接受的信息
 
-  lret Send(Vio *vio)
-  {
-    int r = vio->Send(buffer_, transfer_length_);
-    offset_ = LMSG_TRANSFER_HEAD_SIZE;
     return LSQL_SUCCESS;
   }
 
-  //逻辑头部分的读写
-  void WriteLogicId(uint16_t id)
+  //发送数据，在WriteMsgBuffer之后
+  lret Send(CommPort *port)
   {
-    lendian_write_uint16(logic_head_ + LMSG_LOGIC_ID, id);
-  }
-
-  uint16_t ReadLogicId()
-  {
-    return lendian_read_uint16(logic_head_ + LMSG_LOGIC_ID);
-  }
-
-  //获取logic body
-  uint8_t *ReadLogicBody(uint32_t *size)
-  {
-    *size = logic_length_ - LMSG_LOGIC_HEAD_SIZE;
-    return logic_body_;
-  }
-
-  //写入数据到消息内
-  lret Write(void *data, uint32_t length)
-  {
-    //判断是否超过最大消息长度
-    if ((length + offset_) > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    offset_ += length;
-    return LSQL_SUCCESS;
-  }
-
-  lret WriteUint8(uint8_t value)
-  {
-    if ((offset_ + sizeof(uint8_t)) > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    lendian_write_uint8(buffer_ + offset_, value);
-    return LSQL_SUCCESS;
-  }
-
-  lret WriteUint16(uint16_t value)
-  {
-    if ((offset_ + sizeof(uint16_t)) > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    lendian_write_uint16(buffer_ + offset_, value);
-    return LSQL_SUCCESS;
-  }
-
-  lret WriteUint32(uint32_t value)
-  {
-    if ((offset_ + sizeof(uint32_t)) > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    lendian_write_uint32(buffer_ + offset_, value);
-    return LSQL_SUCCESS;
-  }
-
-  lret WriteUint64(uint64_t value)
-  {
-    if ((offset_ + sizeof(uint64_t)) > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    lendian_write_uint64(buffer_ + offset_, value);
+    int r = port->Send(buffer_, msg_length_ + LMSG_TRANSFER_HEAD_SIZE);
     return LSQL_SUCCESS;
   }
 };
