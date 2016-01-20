@@ -113,6 +113,9 @@ inline void lmsg_write_stmt_id(uint8_t *msg_head, uint64_t stmt_id)
   lendian_write_uint64(msg, stmt_id);
 }
 
+/*
+action head的内存存储结构，方便统一的写入
+*/
 struct lmsg_action_head_struct
 {
   uint16_t action_id;
@@ -122,6 +125,15 @@ struct lmsg_action_head_struct
   uint64_t stmt_id;
 };
 typedef lmsg_action_head_struct lmsg_action_head_t;
+
+/*
+为便于利用action head的空余部分
+*/
+struct lmsg_head_extra_struct
+{
+  uint32_t extra[LMSG_ACTION_HEAD_SIZE - LMSG_ACTION_END];
+};
+typedef struct lmsg_head_extra_struct lmsg_head_extra_t;
 
 class CommPort;
 
@@ -168,7 +180,7 @@ public :
 
   //拼装好的消息写入消息对象
   lret WriteMsg(uint8_t *action_body, uint32_t body_len
-                      , lmsg_action_head_t *action_head)
+                , lmsg_action_head_t *action_head)
   {
     if ((buffer_ + LMSG_HEAD_SIZE) == data)
     {
@@ -180,6 +192,15 @@ public :
     }
 
     //写入头信息
+    return LSQL_SUCCESS;
+  }
+
+  lret WriteMsg(uint8_t *action_body, uint32_t body_len
+                , lmsg_action_head_t *action_head
+                , lmsg_head_extra_t *extra)
+  {
+    WriteMsg(action_body, body_len, action_head);
+    //TODO:写入extra信息
     return LSQL_SUCCESS;
   }
 

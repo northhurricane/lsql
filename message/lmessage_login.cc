@@ -21,6 +21,8 @@ lmsg_login_req_write(Message *message, lmsg_login_req_t *req)
   buffer_size = message->GetActBodyBuffer(&buffer_size);
   NetWriteStream stream(buffer, buffer_size);
 
+  //TODO:填写login的信息
+
   uint8_t *msg;
   uint32_t msg_len;
 
