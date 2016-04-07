@@ -3,7 +3,6 @@
 
 #include "lmutex.h"
 #include "lmessage.h"
-#include "lvio.h"
 #include <list>
 
 using namespace std;
@@ -14,13 +13,11 @@ class Connection
 {
 private :
   Session *session_;
-  Vio *vio_;
   Message message_;
 
 public :
   Session *session() {return session_; }
   void set_session(Session *session) { session_ = session; }
-  void set_vio(Vio *vio) { vio_ = vio; }
   Message *message() { return &message_; }
 
   void Close()

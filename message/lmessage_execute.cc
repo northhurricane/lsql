@@ -1,22 +1,20 @@
 #include "lmessage_execute.h"
 
 lret
-lmessage_prepare_request_write(Message *message
-                               , lmessage_execute_request_t *prepare)
+lmsg_execute_req_write(Message *message, lmsg_execute_req_t *req)
 {
   //logic id
-  message->WriteLogicId(LMSG_LOGIC_ID_PREPARE);
+  //message->WriteLogicId(LMSG_LOGIC_ID_PREPARE);
 
   return LSQL_SUCCESS;
 }
 
 lret
-lmessage_prepare_request_read(Message *message
-                              , lmessage_execute_request_t *prepare)
+lmsg_execute_req_read(Message *message, lmsg_execute_req_t *req)
 {
   uint32_t size = 0;
   uint32_t offset = 0;
-  uint8_t *buffer = message->ReadLogicBody(&size);
+  //  uint8_t *buffer = message->ReadLogicBody(&size);
 
   return LSQL_SUCCESS;
 }

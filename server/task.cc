@@ -9,7 +9,9 @@ static void* task_processing_thread(void *para);
 task_t TaskManager::task_test_;
 bool TaskManager::initialized_ = false;
 Thread* TaskManager::threads_ = NULL;
-lmutex_t TaskManager::mutex_;
+lmutex_t TaskManager::pi_mutex_;
+lmutex_t TaskManager::rr_mutex_;
+lmutex_t TaskManager::free_mutex_;
 lsemaphore_t TaskManager::semaphore_;
 list<task_t*> TaskManager::pi_queue_;
 list<task_t*> TaskManager::rr_queue_;
@@ -126,8 +128,8 @@ Thread* TaskManager::BuildThreadsInfo(uint32_t number)
   Thread *threads = new Thread[number];
   for (int i = 0; i < number; i++)
   {
-    threads[i].set_func(task_processing_thread);
-    threads[i].set_para(threads + i);
+    //threads[i].set_func(task_processing_thread);
+    //threads[i].set_para(threads + i);
   }
 
   return threads;

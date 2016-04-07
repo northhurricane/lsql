@@ -29,8 +29,8 @@ http://programmers.stackexchange.com/questions/95556/what-is-the-advantage-of-li
 据说取自《格利佛游记》中，小人国里鸡蛋应该从大的一头打开还是从小的一头打开
 */
 
-/*默认为LITTLE_ENDIAN，通过编译前生成的ldefs.h获得正确的宏定义*/
-#define LITTLE_ENDIAN 1
+/*默认为LSQL_LITTLE_ENDIAN，通过编译前生成的ldefs.h获得正确的宏定义*/
+#define LSQL_LITTLE_ENDIAN 1
 #include "ldefs.h"
 
 inline uint8_t lendian_read_uint8(void *source)
@@ -55,7 +55,7 @@ inline void lendian_write_int8(void *target, int8_t value)
 
 inline uint16_t lendian_read_uint16(void *source)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   return *((uint16_t*)source);
 #else
 #endif
@@ -68,7 +68,7 @@ inline void lendian_write_uint16(void *target, uint16_t value)
 
 inline int16_t lendian_read_int16(void *source)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   return *((int16_t*)source);
 #else
 #endif
@@ -121,7 +121,7 @@ inline void lendian_write_int64(void *target, int64_t value)
 
 inline float lendian_read_float(void *source)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   return *((float*)source);
 #else
   float value;
@@ -135,7 +135,7 @@ inline float lendian_read_float(void *source)
 
 inline void lendian_write_float(void *target, float value)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   *(float *)target = value;
 #else
   memcpy(target, (uint8_t*)(&value) + 3, 1);
@@ -147,7 +147,7 @@ inline void lendian_write_float(void *target, float value)
 
 inline double lendian_read_double(void *source)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   return *((double*)source);
 #else
   double value;
@@ -167,7 +167,7 @@ inline double lendian_read_double(void *source)
 
 inline void lendian_write_double(void *target, double value)
 {
-#ifdef LITTLE_ENDIAN
+#ifdef LSQL_LITTLE_ENDIAN
   *(double*)target = value;
 #else
   memcpy(target, (uint8_t*)(&value) + 3, 1);

@@ -153,8 +153,8 @@ static void lsqld_deal_connection(enet_socket_t socket)
 
   Connection *connection = new Connection();
   ConnectionManager::Add(connection);
-  Vio *vio = new VioEnet(accept_socket);
-  connection->set_vio(vio);
+  //Vio *vio = new VioEnet(accept_socket);
+  //connection->set_vio(vio);
   event.data.ptr = connection;
 
   r = enet_add_socket(enet, accept_socket, &event);
@@ -164,9 +164,9 @@ static void lsqld_deal_message(Connection *connection)
 {
   task_t *task = TaskManager::Allocate();
   task->session = connection->session();
-  task->type = TASK_PROCESS_MESSAGE;
+  //task->type = TASK_PROCESS_MESSAGE;
   task->content = connection;
-  TaskManager::Enqueue(task);
+  //TaskManager::Enqueue(task);
 }
 
 //关闭服务线程

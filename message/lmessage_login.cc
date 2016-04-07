@@ -15,7 +15,7 @@ lmsg_login_req_head_write()
 lret
 lmsg_login_req_write(Message *message, lmsg_login_req_t *req)
 {
-  uint8_t *buffer;
+  /*  uint8_t *buffer;
   uint32_t buffer_size;
 
   buffer_size = message->GetActBodyBuffer(&buffer_size);
@@ -27,7 +27,7 @@ lmsg_login_req_write(Message *message, lmsg_login_req_t *req)
   uint32_t msg_len;
 
   msg = stream.FinishWriting(&msg_len);
-  message.WriteMsgBuffer(act_body, act_body_len);
+  message.WriteMsgBuffer(act_body, act_body_len);*/
 
   return LSQL_SUCCESS;
 }

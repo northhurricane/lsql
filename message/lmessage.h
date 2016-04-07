@@ -5,7 +5,7 @@
 #include "lendian.h"
 #include "enet.h"
 #include "lmemory.h"
-#include "lvio.h"
+#include "ltypedef.h"
 
 
 //MSG is short for MESSAGE
@@ -135,7 +135,7 @@ struct lmsg_head_extra_struct
 };
 typedef struct lmsg_head_extra_struct lmsg_head_extra_t;
 
-class CommPort;
+//class CommPort;
 
 #define LMSG_BUFFER_SIZE (1024 * 16)
 class Message
@@ -146,7 +146,7 @@ private :
   uint8_t  *buffer_;
   uint32_t buffer_size_;
 
-  void SetBuffer(uint8_t *buffer, uint32_t buffer_size_)
+  void SetBuffer(uint8_t *buffer, uint32_t buffer_size)
   {
     buffer_ = buffer;
     buffer_size_ = buffer_size;
@@ -175,21 +175,21 @@ public :
   uint8_t *GetActionBodyBuffer(uint32_t *buffer_size)
   {
     *buffer_size = buffer_size_;
-    return buffer_ + LMSG_HEAD_SIZE；
+    return buffer_ + LMSG_HEAD_SIZE;
   }
 
   //拼装好的消息写入消息对象
   lret WriteMsg(uint8_t *action_body, uint32_t body_len
                 , lmsg_action_head_t *action_head)
   {
-    if ((buffer_ + LMSG_HEAD_SIZE) == data)
+    /*if ((buffer_ + LMSG_HEAD_SIZE) == data_)
     {
       //TODO:使用的是对象提供的缓冲区
     }
     else
     {
       //TODO:重新分配内存
-    }
+      }*/
 
     //写入头信息
     return LSQL_SUCCESS;
@@ -207,12 +207,12 @@ public :
   //获取填写的消息
   uint8_t* GetMsg(uint32_t *body_length, lmsg_action_head_t *head)
   {
-    *msg_length = msg_length;
+    //*msg_length = msg_length_;
     return buffer_ + LMSG_TRANSFER_HEAD_SIZE;
   }
 
-  //接受消息
-  lret Recieve(CommPort *port)
+  //接收消息
+  /*lret Recieve(CommPort *port)
   {
     int r = port->Recieve(buffer_, buffer_size_);
 
@@ -237,13 +237,13 @@ public :
   {
     int r = port->Send(buffer_, msg_length_ + LMSG_TRANSFER_HEAD_SIZE);
     return LSQL_SUCCESS;
-  }
+    }*/
 };
 
-class NetWriteStream
+/*class NetWriteStream
 {
 public :
-  NetStream(void *buffer)
+  NetWriteStream(void *buffer)
   {
   }
   ~NetStream()
@@ -268,5 +268,6 @@ public :
     return NULL;
   }
 };
+*/
 
 #endif // LSQL_INCLUDE_LMESSAGE_H_

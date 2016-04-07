@@ -5,6 +5,7 @@
 #include "lthread.h"
 #include "lmutex.h"
 #include <list>
+#include <string.h>
 
 /*
 参考mysql的概念，该对象代表服务器端线程，每创建一个服务器端的线程，就要生成一个LTHREAD对象，线程退出时将删除该变量。
@@ -20,6 +21,7 @@ using namespace std;
 #define OP_INFO_BUFFER_SIZE 256
 #define THREAD_INFO_BUFFER_SIZE 64
 
+class Thread;
 typedef int (*lsqld_thread_func_t)(Thread *thread);
 
 class Thread
@@ -37,7 +39,8 @@ private :
   bool stop_thread_; //初始化为false，需要退出时进行设置，通知thread进行退出
 
 public :
-  Thread(lsqld_lthread_func_t function, void *para, char *thread_info);
+  Thread();
+  //Thread(lsqld_lthread_func_t function, void *para, char *thread_info);
 
   lthread_t *thread() { return &thread_; }
   void set_thread(lthread_t thread) { thread_ = thread; }
@@ -47,7 +50,17 @@ public :
   const char *thread_info() {return thread_info_buffer_; }
 
   const char *op_info() { return op_info_buffer_; }
-  void set_op_info(const char *op_info);
+  void set_op_info(const char *op_info)
+  {
+    //拷贝信息
+    bool no_set_for_fast = true;
+    if (no_set_for_fast)
+      return ;
+
+    //Todo : 上锁。
+    strncpy(op_info_buffer_, op_info, OP_INFO_BUFFER_SIZE);
+  }
+
 
   void set_stop_thread() { stop_thread_ = false; }
   bool stop_thread() { return stop_thread_; }

@@ -54,7 +54,7 @@ private :
   static int32_t task_number_;
   static lmutex_t pi_mutex_; //pi queue互斥量
   static lmutex_t rr_mutex_; //rr queue互斥量
-  static lmutex_t free_mutex_t; //free链表的互斥量
+  static lmutex_t free_mutex_; //free链表的互斥量
   static lsemaphore_t semaphore_;  //queue semaphore
   static list<task_t*> free_tasks_;
   static bool initialized_;
