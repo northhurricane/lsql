@@ -1,14 +1,22 @@
 #include "LThread.h"
 
+////////////////////////
+LThread *LThread::Create(const char *thrd_info)
+{
+  return new LThread();
+}
+
+void LThread::Destroy(LThread *thread)
+{
+  lassert(thread != NULL);
+  delete thread;
+}
+
 LThread::LThread()
 {
 }
 
-/*LThread::LThread(lthread_function_t function, void *para, char *thread_info)
-{
-}*/
-
-
+////////////////////////
 LThreadManager* LThreadManager::instance_ = (LThreadManager*)NULL;
 
 LThreadManager::LThreadManager()
@@ -57,8 +65,6 @@ lsqld_thread_create(LThread *thread)
     return LSQL_ERROR;
 
   thread->set_thread(thread_id);
-
-  LThreadManager::GetInstance()->Add(thread);
 
   return LSQL_SUCCESS;
 }

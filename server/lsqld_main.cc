@@ -1,7 +1,6 @@
 #include "lsqld.h"
 #include "enet.h"
 #include "conn.h"
-#include "lsqld_thread.h"
 #include "work_threads.h"
 #include "LComm.h"
 

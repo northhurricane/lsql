@@ -26,21 +26,9 @@ typedef int (*lsqld_thread_func_t)(LThread *thread);
 
 class LThread
 {
-private :
-  lthread_t thread_;  //lsql封装的操作系统下thread标识，在线程创建后有效
-
-  //线程初始信息，运行过程中不会改变
-  lsqld_thread_func_t func_; //线程函数
-  void *para_;  //线程的实际参数
-  char thread_info_buffer_[THREAD_INFO_BUFFER_SIZE]; //该线程的初始化信息
-
-  //运行时信息，会发生改变
-  char op_info_buffer_[OP_INFO_BUFFER_SIZE];  //当前线程操作内容
-  bool stop_thread_; //初始化为false，需要退出时进行设置，通知thread进行退出
-
 public :
-  LThread();
-  //LThread(lsqld_lthread_func_t function, void *para, char *thread_info);
+  static LThread *Create(const char *thrd_info);
+  static void Destroy(LThread *thread);
 
   lthread_t *thread() { return &thread_; }
   void set_thread(lthread_t thread) { thread_ = thread; }
@@ -64,6 +52,20 @@ public :
 
   void set_stop_thread() { stop_thread_ = false; }
   bool stop_thread() { return stop_thread_; }
+
+private :
+  LThread();
+
+  lthread_t thread_;  //lsql封装的操作系统下thread标识，在线程创建后有效
+
+  //线程初始信息，运行过程中不会改变
+  lsqld_thread_func_t func_; //线程函数
+  void *para_;  //线程的实际参数
+  char thread_info_buffer_[THREAD_INFO_BUFFER_SIZE]; //该线程的初始化信息
+
+  //运行时信息，会发生改变
+  char op_info_buffer_[OP_INFO_BUFFER_SIZE];  //当前线程操作内容
+  bool stop_thread_; //初始化为false，需要退出时进行设置，通知thread进行退出
 };
 
 //用于记录服务器中的工作线程
