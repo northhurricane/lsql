@@ -1,6 +1,6 @@
 cd ~/lsql/build
 
-g++ -g -I ../include -I ../message -I ../server -I ../sql_parse -I ../externs -I ../util ../externs/libenet.so -lpthread ../server/main.cc ../server/task.cc ../server/lsqld.cc ../server/lsqld_main.cc ../server/lsqld_thread.cc ../server/conn.cc ../server/sess.cc ../server/task_process.cc ../server/sql_process.cc ../sql_parse/sql_parser.cc ../message/lmessage_login.cc ../message/lmessage_prepare.cc  ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc -o lsqld
+g++ -g -I ../include -I ../message -I ../server -I ../sql_parse -I ../externs -I ../util ../externs/libenet.so -lpthread ../server/main.cc ../server/LComm.cc ../server/LPort.cc ../server/LSession.cc ../server/task.cc ../server/lsqld.cc ../server/lsqld_main.cc ../server/lsqld_thread.cc ../server/conn.cc ../server/sess.cc ../server/task_process.cc ../server/sql_process.cc ../sql_parse/sql_parser.cc ../message/lmessage_login.cc ../message/lmessage_prepare.cc  ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc -o lsqld
 
 g++ -g -fPIC --share -I ../include -I ../externs -I ../lpi ../externs/libenet.so ../os/lthread.cc ../os/lmutex.cc ../os/lsemaphore.cc ../lpi/env.cc ../lpi/dbc.cc -o liblpi.so
 

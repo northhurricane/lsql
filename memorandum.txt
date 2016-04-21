@@ -1,6 +1,6 @@
 该文档将随着系统的逐渐成长而不断改变
 
-任何时候，命名都是一个麻烦的事情。不同的命名规则的混合是一场视觉上的灾难。但是由于众多流派的不同，命名自然不同。比如windows和linux下的系统函数命名就是不同的。基于最初是在linux的epoll上进行第一步的开发，所以在函数/类型的命名上，采用linux下诸如epoll_create这样风格，其他命名规则基本遵循google的c++代码规范。（http://zh-google-styleguide.readthedocs.org/en/latest/google-cpp-styleguide/naming/）
+任何时候，命名都是一个麻烦的事情。不同的命名规则的混合是一场视觉上的灾难。但是由于众多流派的不同，命名自然不同。比如windows和linux下的系统函数命名就是不同的。基于最初是在linux的epoll上进行第一步的开发，所以在函数/类型的命名上，采用linux下诸如epoll_create这样风格，其他命名规则基本参考google的c++代码规范。（http://zh-google-styleguide.readthedocs.org/en/latest/google-cpp-styleguide/naming/）
 
 因此尝试文件/函数/类型等对google c++命名规则补充定义如下
 1、非类函数：全部采用小写，以模块名或者编译单元名开头，以主谓宾的模式进行函数起名，单词之间以“_”分割，以区分类函数和非类函数。

@@ -3,6 +3,7 @@
 #include "enet.h"
 #include "conn.h"
 #include "lsqld_thread.h"
+#include "LComm.h"
 
 static void lsqld_init_net();
 static void lsqld_deal_net_event();
@@ -48,6 +49,54 @@ int lsqld_main(int argc, char *argv[])
   ThreadManager::Deinitialize();
 
   return LSQL_SUCCESS;
+}
+
+static int lsqld_init_comm()
+{
+  int r;
+  r = LComm::Initialize();
+  if (r < 0)
+  {
+    //记录错误日志
+  }
+  return r;
+}
+
+static void lsqld_deal_comm_event()
+{
+  LComm *comm = lcomm_get();
+  lcomm_event_t events[LCOMM_MAX_EVENT_WAIT];
+  lcomm_event_t *event;
+  int num;
+
+  while (true)
+  {
+    if (comm->Closed())
+      break;
+
+    num = comm->Wait(events, LCOMM_MAX_EVENT_WAIT);
+    if (num <= 0)
+    {
+      //错误处理
+    }
+    for (int i = 0; i < num; i++)
+    {
+      event = events + i;
+      //处理事件
+      if (event->get_type() == LCOMM_EVENT_CONNECT)
+      {
+        //处理连接
+      }
+      else if (event->get_type() == LCOMM_EVENT_MESSAGE)
+      {
+        //处理消息
+      }
+      else
+      {
+        lassert(event->get_type() == LCOMM_EVENT_DISCONNECT);
+      }
+    }
+  }
 }
 
 static void lsqld_init_net()
