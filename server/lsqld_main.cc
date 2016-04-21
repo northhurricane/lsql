@@ -1,8 +1,8 @@
 #include "lsqld.h"
-#include "task.h"
 #include "enet.h"
 #include "conn.h"
 #include "lsqld_thread.h"
+#include "work_threads.h"
 #include "LComm.h"
 
 static void lsqld_init_net();
@@ -23,7 +23,7 @@ int lsqld_main(int argc, char *argv[])
 
   //初始化lsqld进程
   //所有线程的创建依赖于ThreadManager的初始化，必须第一个初始化
-  //TaskManager::Initialize();
+  work_threads_init();
 
   lsqld_init_vm();
 
@@ -41,7 +41,7 @@ int lsqld_main(int argc, char *argv[])
 
   lsqld_deinit_vm();
 
-  lsqld_thread_deinit();
+  work_threads_deinit();
 
   return LSQL_SUCCESS;
 }

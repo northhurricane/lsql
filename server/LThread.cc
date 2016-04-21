@@ -1,4 +1,4 @@
-#include "lsqld_thread.h"
+#include "LThread.h"
 
 LThread::LThread()
 {
@@ -43,18 +43,6 @@ Thead::set_op_info(const char *op_info)
   }*/
 
 ////////////////////////
-lret
-lsqld_thread_init()
-{
-  return LSQL_SUCCESS;
-}
-
-lret
-lsqld_thread_deinit()
-{
-  return LSQL_SUCCESS;
-}
-
 static __LTLS__ LThread *curr_thread = NULL;
 
 lret
@@ -86,3 +74,4 @@ lsqld_thread_set_current(LThread *thread)
 {
   curr_thread = thread;
 }
+

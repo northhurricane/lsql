@@ -1,5 +1,5 @@
-#ifndef LSQL_SERVER_LSQLD_THREAD_H
-#define LSQL_SERVER_LSQLD_THREAD_H
+#ifndef _LTHREAD_H_
+#define _LTHREAD_H_
 
 #include "lsql.h"
 #include "lthread.h"
@@ -102,14 +102,6 @@ public :
   }
 };
 
-/*线程初始化*/
-lret
-lsqld_thread_init();
-
-/*线程销毁*/
-lret
-lsqld_thread_deinit();
-
 /*创建线程*/
 lret
 lsqld_thread_create(LThread *thread);
@@ -122,4 +114,4 @@ lsqld_thread_current();
 void
 lsqld_thread_set_current(LThread *thread);
 
-#endif //LSQL_SERVER_LSQLD_THREAD_H
+#endif //_LTHREAD_H_
