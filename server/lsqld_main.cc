@@ -4,13 +4,13 @@
 #include "work_threads.h"
 #include "LComm.h"
 
-static void lsqld_init_net();
-static void lsqld_deal_net_event();
 static void lsqld_init_vm();
 static void lsqld_deinit_vm();
 static void lsqld_wait_for_deinit_ready();
 static void lsqld_init_ldb();
 static void lsqld_deinit_ldb();
+static int lsqld_init_comm();
+static void lsqld_deal_comm_event();
 
 //the purpose to place main function at first is that I wish beginner
 //can locate main branch as quick as possible. 
@@ -28,10 +28,10 @@ int lsqld_main(int argc, char *argv[])
 
   lsqld_init_ldb();
 
-  lsqld_init_net();
+  //lsqld_init_comm();
 
-  //初始化完成，处理连接
-  lsqld_deal_net_event();
+  //初始化完成，处理通信事件
+  lsqld_deal_comm_event();
 
   //关闭所有端口，不再处理用户请求，进行资源的销毁
   lsqld_wait_for_deinit_ready();
@@ -80,6 +80,7 @@ static void lsqld_deal_comm_event()
       if (event->get_type() == LCOMM_EVENT_CONNECT)
       {
         //处理连接
+        connect_task_enqueue(event->get_port());
       }
       else if (event->get_type() == LCOMM_EVENT_MESSAGE)
       {
@@ -87,12 +88,14 @@ static void lsqld_deal_comm_event()
       }
       else
       {
+        //处理断开
         lassert(event->get_type() == LCOMM_EVENT_DISCONNECT);
       }
     }
   }
 }
 
+#ifdef _COMPILE_IT_
 static void lsqld_init_net()
 {
   LSQLD *lsqld = LSQLD::GetInstance(); 
@@ -206,6 +209,8 @@ static void lsqld_deal_connection(enet_socket_t socket)
 static void lsqld_deal_message(Connection *connection)
 {
 }
+
+#endif //_COMPILE_IT_
 
 static void lsqld_init_vm()
 {

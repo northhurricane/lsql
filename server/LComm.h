@@ -21,6 +21,8 @@ struct lcomm_event_struct
 
   lcomm_event_type_e get_type() { return type; }
   void set_type(lcomm_event_type_e type_) { type = type_; }
+  LPort *get_port() { return port; }
+  void set_port(LPort *port_) { port = port_; }
 };
 typedef lcomm_event_struct lcomm_event_t;
 
