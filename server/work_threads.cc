@@ -46,7 +46,9 @@ int work_thread_deal_connect(LThread *thread)
     //判断线程状态
     if (thread->stop_thread())
     {
+      break;
     }
+    //处理端口上的连接
   }
 
   //清理线程上使用的资源
