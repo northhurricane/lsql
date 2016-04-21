@@ -7,7 +7,6 @@
 
 static void lsqld_init_net();
 static void lsqld_deal_net_event();
-static void lsqld_create_shutdown_thread();
 static void lsqld_init_vm();
 static void lsqld_deinit_vm();
 static void lsqld_wait_for_deinit_ready();
@@ -24,10 +23,7 @@ int lsqld_main(int argc, char *argv[])
 
   //初始化lsqld进程
   //所有线程的创建依赖于ThreadManager的初始化，必须第一个初始化
-  ThreadManager::Initialize();
-  TaskManager::Initialize();
-
-  lsqld_create_shutdown_thread();
+  //TaskManager::Initialize();
 
   lsqld_init_vm();
 
@@ -45,8 +41,7 @@ int lsqld_main(int argc, char *argv[])
 
   lsqld_deinit_vm();
 
-  TaskManager::Deinitialize();
-  ThreadManager::Deinitialize();
+  lsqld_thread_deinit();
 
   return LSQL_SUCCESS;
 }
@@ -210,24 +205,6 @@ static void lsqld_deal_connection(enet_socket_t socket)
 }
 
 static void lsqld_deal_message(Connection *connection)
-{
-  task_t *task = TaskManager::Allocate();
-  task->session = connection->session();
-  //task->type = TASK_PROCESS_MESSAGE;
-  task->content = connection;
-  //TaskManager::Enqueue(task);
-}
-
-//关闭服务线程
-static void* lsqld_shutdown_thread(void *para)
-{
-  while (true)
-  {
-  }
-  return NULL;
-}
-
-static void lsqld_create_shutdown_thread()
 {
 }
 

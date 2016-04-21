@@ -1,29 +1,29 @@
 #include "lsqld_thread.h"
 
-Thread::Thread()
+LThread::LThread()
 {
 }
 
-/*Thread::Thread(lthread_function_t function, void *para, char *thread_info)
+/*LThread::LThread(lthread_function_t function, void *para, char *thread_info)
 {
 }*/
 
 
-ThreadManager* ThreadManager::instance_ = (ThreadManager*)NULL;
+LThreadManager* LThreadManager::instance_ = (LThreadManager*)NULL;
 
-ThreadManager::ThreadManager()
+LThreadManager::LThreadManager()
 {
   lmutex_init(&mutex_);
 }
 
-lret ThreadManager::Initialize()
+lret LThreadManager::Initialize()
 {
-  instance_ = new ThreadManager();
+  instance_ = new LThreadManager();
 
   return LSQL_SUCCESS;
 }
 
-lret ThreadManager::Deinitialize()
+lret LThreadManager::Deinitialize()
 {
   delete instance_;
 
@@ -43,10 +43,22 @@ Thead::set_op_info(const char *op_info)
   }*/
 
 ////////////////////////
-static __LTLS__ Thread *curr_thread = NULL;
+lret
+lsqld_thread_init()
+{
+  return LSQL_SUCCESS;
+}
 
 lret
-lsqld_thread_create(Thread *thread)
+lsqld_thread_deinit()
+{
+  return LSQL_SUCCESS;
+}
+
+static __LTLS__ LThread *curr_thread = NULL;
+
+lret
+lsqld_thread_create(LThread *thread)
 {
   lthread_function_t thrd_func = (lthread_function_t)thread->func();
 
@@ -58,19 +70,19 @@ lsqld_thread_create(Thread *thread)
 
   thread->set_thread(thread_id);
 
-  ThreadManager::GetInstance()->Add(thread);
+  LThreadManager::GetInstance()->Add(thread);
 
   return LSQL_SUCCESS;
 }
 
-Thread*
+LThread*
 lsqld_thread_current()
 {
   return curr_thread;
 }
 
 void
-lsqld_thread_set_current(Thread *thread)
+lsqld_thread_set_current(LThread *thread)
 {
   curr_thread = thread;
 }

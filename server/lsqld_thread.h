@@ -21,10 +21,10 @@ using namespace std;
 #define OP_INFO_BUFFER_SIZE 256
 #define THREAD_INFO_BUFFER_SIZE 64
 
-class Thread;
-typedef int (*lsqld_thread_func_t)(Thread *thread);
+class LThread;
+typedef int (*lsqld_thread_func_t)(LThread *thread);
 
-class Thread
+class LThread
 {
 private :
   lthread_t thread_;  //lsql封装的操作系统下thread标识，在线程创建后有效
@@ -39,8 +39,8 @@ private :
   bool stop_thread_; //初始化为false，需要退出时进行设置，通知thread进行退出
 
 public :
-  Thread();
-  //Thread(lsqld_lthread_func_t function, void *para, char *thread_info);
+  LThread();
+  //LThread(lsqld_lthread_func_t function, void *para, char *thread_info);
 
   lthread_t *thread() { return &thread_; }
   void set_thread(lthread_t thread) { thread_ = thread; }
@@ -67,24 +67,24 @@ public :
 };
 
 //用于记录服务器中的工作线程
-class ThreadManager
+class LThreadManager
 {
 private :
-  list<Thread*> threads_; //用于记录server正在运行中的线程
+  list<LThread*> threads_; //用于记录server正在运行中的线程
   lmutex_t mutex_; //
 
-  static ThreadManager *instance_;
-  ThreadManager();
+  static LThreadManager *instance_;
+  LThreadManager();
 
 public :
-  void Add(Thread *thread)
+  void Add(LThread *thread)
   {
     lmutex_lock(&mutex_);
     threads_.push_back(thread);
     lmutex_unlock(&mutex_);
   }
 
-  void Remove(Thread *thread)
+  void Remove(LThread *thread)
   {
     lmutex_lock(&mutex_);
     threads_.remove(thread);
@@ -94,7 +94,7 @@ public :
   static lret Initialize();
   static lret Deinitialize();
 
-  static inline ThreadManager *GetInstance()
+  static inline LThreadManager *GetInstance()
   {
     lassert(instance_ != NULL);
 
@@ -102,16 +102,24 @@ public :
   }
 };
 
+/*线程初始化*/
+lret
+lsqld_thread_init();
+
+/*线程销毁*/
+lret
+lsqld_thread_deinit();
+
 /*创建线程*/
 lret
-lsqld_thread_create(Thread *thread);
+lsqld_thread_create(LThread *thread);
 
 /*获取当前线程的线程对象*/
-Thread*
+LThread*
 lsqld_thread_current();
 
 /*设置当前线程的线程对象*/
 void
-lsqld_thread_set_current(Thread *thread);
+lsqld_thread_set_current(LThread *thread);
 
 #endif //LSQL_SERVER_LSQLD_THREAD_H
