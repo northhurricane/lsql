@@ -6,6 +6,8 @@
 
 using namespace std;
 
+class LPort;
+
 /*
   会话对象
 */
@@ -21,20 +23,18 @@ public :
   */
   int Close();
   /**/
-  void *get_port() { return port_; }
+  LPort *get_port() { return port_; }
   uint64_t get_id() { return id_; }
+
 private :
-  void     *port_;
+  
+  LPort    *port_;
   uint64_t id_;
 };
 
-class LSessionManager
-{
-public :
-  static LSession *CreateSession(void *port);
-  static void DestroySession(LSession *session);
-  static LSession *FindByPort(void *port);
-  static LSession *FindById(uint64_t id);
-};
+LSession *session_create(LPort *port);
+void session_destroy(LSession *session);
+LSession *session_find_by_port(LPort *port);
+LSession *session_find_by_id(uint64_t id);
 
 #endif //_LSESSION_H_

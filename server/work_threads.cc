@@ -3,6 +3,7 @@
 #include "LThread.h"
 #include "lmutex.h"
 #include "lsemaphore.h"
+#include "lserver_misc.h"
 
 using namespace std;
 
@@ -49,6 +50,8 @@ int work_thread_deal_connect(LThread *thread)
       break;
     }
     //处理端口上的连接
+    lassert(port != NULL);
+    svr_do_connect(port);
   }
 
   //清理线程上使用的资源
