@@ -1,12 +1,16 @@
 #ifndef _LSESSION_H_
 #define _LSESSION_H_
 
-#include <vector>
 #include <stdint.h>
+#include <map>
 
 using namespace std;
 
 class LPort;
+class LStmt;
+
+typedef map<uint64_t, LStmt*> stmt_id_map_t;
+typedef stmt_id_map_t::iterator stmt_id_map_it_t;
 
 /*
   会话对象
@@ -25,11 +29,17 @@ public :
   /**/
   LPort *get_port() { return port_; }
   uint64_t get_id() { return id_; }
+  LStmt *FindStmt(uint64_t id)
+  {
+    stmt_id_map_it_t it = stmt_id_map_.find(id);
+  }
 
 private :
-  
   LPort    *port_;
   uint64_t id_;
+
+  /*在该会话上分配的语句句柄的map*/
+  stmt_id_map_t stmt_id_map_;
 };
 
 LSession *session_create(LPort *port);
