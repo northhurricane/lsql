@@ -3,32 +3,21 @@
 VFunction::VFunction()
 {
   serial_ = VF_SERIAL_UNDEFINE;
-  first_ = NULL;
-  second_ = NULL;
 }
 
 
-void
+vfreturn_t
 VFunction::Execute(VProcess *process)
 {
-  //执行左侧
-  process->CallFunc(first_);
-  ActionAfterFirstFunc(process);
+  vfreturn_t ret;
+  ret = ActionBeforeLeftFunctionCall();
 
-  VFScene *scene = process->GetScene(serial());
+  ret = left_->Execute(process);
 
-  if (seconde() != NULL)
-  {
-    if (scene->over())
-    {
-      //assert: second函数必须是初始化（initialized）或者重置（reset）状态
-    }
-    else
-    {
-      //进行第二函数的执行
-      process->CallFunc(second_);
-      ActionAfterSecondFunc();
-    }
-  }
+  ret = ActionAfterLeftFunctionCall();
+
+  ret = right_->Execute(process);
+
+  ret = ActionAfterRightFunctionCall();
 }
 

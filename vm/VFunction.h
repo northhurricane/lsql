@@ -1,5 +1,5 @@
-#ifndef LSQL_SERVER_VM_VFUNCTION_H_
-#define LSQL_SERVER_VM_VFUNCTION_H_
+#ifndef _VFUNCTION_H_
+#define _VFUNCTION_H_
 
 struct vfreturn_struct
 {
@@ -16,6 +16,16 @@ inline vfreturn_t over_return()
   ret.error = false;
   ret.over = true;
   ret.data = NULL;
+}
+
+inline bool func_error_occured(vfreturn_t ret)
+{
+  return false;
+}
+
+inline bool FunctionIsOver(vfreturn_t ret)
+{
+  return false;
 }
 
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
@@ -45,41 +55,46 @@ protected :
 class VFunction
 {
 public :
-  //函数运行
-  virtual vfreturn_t Run(VProcess *process) = 0;
+  enum VFType
+  {
+    VF_NORMAL,
+    VF_ROWSET,
+  };
 
-  /*函数执行*/
-  void Execute(VProcess *process);
+public :
+  //函数运行
+  vfreturn_t Execute(VProcess *process);
 
   //创建函数运行时所需的运行现场，在虚拟进程的函数运行前，被调用
   virtual VFScene *CreateScene(VProcess *process) = 0;
 
   //销毁函数运行时所需的运行现场，在虚拟进程结束时，进行销毁
   virtual void DestroyScene(VProcess *process) = 0;
-  VFunction() ;
+
+
+  VFunction();
 
 protected:
-  virtual void ActionAfterFirstFunc() = 0;
-  vritual void ActionAfterSecondFunc() = 0;
+  virtual vfreturn_t ActionBeforeLeftFunctionCall() = 0;
+  virtual vfreturn_t ActionAfterLeftFunctionCall() = 0;
+  virtual vfreturn_t ActionAfterRightFunctionCall() = 0;
 
 private:
-  /*serail_的值在program生成时产生，每个program下的function的serial是唯一的。
-    可将其看作C中的函数地址，C中每个函数的地址在某个确定的program中都是唯一的。*/
+  /*
+    serail_的值在program生成时产生，每个program下的function的serial是唯一的。
+    可将其看作C中的函数地址，C中每个函数的地址在某个确定的program中都是唯一的
+    该变量
+  */
   uint32_t serial_; 
-  VFunction *first_;   //第一个被执行
-  VFunction *second_;  //第二个被执行
+  VFunction *left_;   //左子树函数
+  VFunction *right_;  //右子树函数
   coldef_array_t *coldefs_; //函数返回行集的元信息
-  //用于定义如何使用first_/second_的行集的信息。也就是从子函数的行集到当前函数的行集的转化。比如abs(f1), cos(f1)，f1+f2这样的计算列，或者直接将行集的某些列的数据拷贝到当前行集
 
 public :
-  VFunction *first() { return first_; }
-  void set_first(VFunction *first) { first_ = first; }
-  VFunction *second() { return second_; }
-  void set_second(VFunction *second) { second_ = second; }
   uint32_t serial() { return serial_; }
   void set_serial(uint32_t serial) { serial_ = serial; }
   coldef_array_t *coldefs() { return coldefs_; }
 };
 
-#ifndef // LSQL_SERVER_VM_VFUNCTION_H_
+#ifndef //_VFUNCTION_H_
 

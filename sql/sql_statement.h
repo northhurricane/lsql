@@ -1,15 +1,18 @@
-#ifndef LSQL_SQL_SQL_STATEMENT_H_
-#define LSQL_SQL_SQL_STATEMENT_H_
+#ifndef _SQL_STATEMENT_H_
+#define _SQL_STATEMENT_H_
 
 #include <stdint.h>
 
-typedef uint16_t sql_stmt_type_t;
 /*用于定义SQL statement的类型*/
-#define SQL_STATEMENT_NONE 0
-#define SQL_STATEMENT_INSERT 1
-#define SQL_STATEMENT_DELETE 2
-#define SQL_STATEMENT_UPDATE 3
-#define SQL_STATEMENT_SELECT 4
-#define SQL_STATEMENT_CREATE_TABLE 5
+enum sql_type_enum {
+  SQL_STATEMENT_NONE = 0,
+  SQL_STATEMENT_INSERT = 1,
+  SQL_STATEMENT_DELETE = 2,
+  SQL_STATEMENT_UPDATE = 3,
+  SQL_STATEMENT_SELECT = 4,
+  SQL_STATEMENT_CREATE_TABLE = 5
+};
 
-#endif //LSQL_SQL_SQL_STATEMENT_H_
+typedef sql_type_enum sql_type_e;
+
+#endif //_SQL_STATEMENT_H_

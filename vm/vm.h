@@ -1,15 +1,6 @@
 #ifndef LSQL_SERVER_VM_VM_H_
 #define LSQL_SERVER_VM_VM_H_
 
-#include <list>
-#include "column.h"
-#include "memory.h"
-#include "vfdata.h"
-#include "autoheap.h"
-#include "lmutex.h"
-#include "lsemaphore.h"
-
-
 /* 
    设计目标
    每一个SQL语句的完成都是由一些列函数调用完成的。
@@ -53,9 +44,8 @@ class VSqlResult
 public :
   enum Type_enum
   {
-    Rowset = 1,
-    Rowcount = 2,
-    Empty = 3
+    ROWSET = 1,
+    ROWCOUNT = 2,
   };
   typedef Type_enum Type;
 
@@ -88,22 +78,5 @@ public :
 private :
   int64_t rowcount_;
 };
-
-class EmptyResult : public VSqlResult
-{
-public :
-  EmptyResult()
-  {
-    type_ = Empty;
-  }
-};
-
-class Thread;
-
-class VM
-{
-private :
-  Thread *thread_;
-}
 
 #endif //LSQL_SERVER_VM_VM_H_
