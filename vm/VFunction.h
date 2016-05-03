@@ -10,7 +10,7 @@ struct vfreturn_struct
 };
 typedef struct vfreturn_struct vfreturn_t;
 
-inline vfreturn_t over_return()
+inline vfreturn_t vfunc_over_return()
 {
   vfreturn_t ret;
   ret.error = false;
@@ -18,12 +18,14 @@ inline vfreturn_t over_return()
   ret.data = NULL;
 }
 
-inline bool func_error_occured(vfreturn_t ret)
+inline bool vfunc_error_occured(vfreturn_t ret)
 {
+  if (ret.eorr == true)
+    return true;
   return false;
 }
 
-inline bool FunctionIsOver(vfreturn_t ret)
+inline bool vfunc_(vfreturn_t ret)
 {
   return false;
 }
@@ -76,8 +78,8 @@ public :
 
 protected:
   virtual vfreturn_t ActionBeforeLeftFunctionCall() = 0;
-  virtual vfreturn_t ActionAfterLeftFunctionCall() = 0;
-  virtual vfreturn_t ActionAfterRightFunctionCall() = 0;
+  virtual vfreturn_t ActionAfterLeftFunctionCall(vreturn_t ret) = 0;
+  virtual vfreturn_t ActionAfterRightFunctionCall(vreturn_t ret) = 0;
 
 private:
   /*
