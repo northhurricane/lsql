@@ -18,18 +18,6 @@ inline vfreturn_t vfunc_over_return()
   ret.data = NULL;
 }
 
-inline bool vfunc_error_occured(vfreturn_t ret)
-{
-  if (ret.eorr == true)
-    return true;
-  return false;
-}
-
-inline bool vfunc_(vfreturn_t ret)
-{
-  return false;
-}
-
 /*函数运行现场。函数运行时，需要保存变量信息，执行的位置信息等*/
 class VFScene
 {
