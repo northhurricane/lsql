@@ -29,7 +29,8 @@ typedef lcomm_event_struct lcomm_event_t;
 #define LCOMM_MAX_EVENT_WAIT    (64)
 
 /*
-通讯对象
+服务器与客户端通讯的抽象。
+单例，每个服务器只有一个
 */
 class LComm
 {
@@ -45,6 +46,8 @@ public :
     返回值：
       -1   : 发生错误
       正数 : 事件个数
+    说明：
+      当事件的类型为LCOMM_EVENT_CONNECT，event的port为建立好连接的对象。
   */
   int Wait(lcomm_event_t *events, int size);
   /*

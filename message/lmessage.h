@@ -54,7 +54,8 @@ stmt id:语句句柄id
 #define LMSG_ACTION_ID       (LMSG_ACTION_HEAD)
 #define LMSG_SESSION_ID      (LMSG_ACTION_ID + LINT16_SIZE)
 #define LMSG_STMT_ID         (LMSG_SESSION_ID + LINT64_SIZE)
-#define LMSG_ACTION_END      (LMSG_STMT_ID + LINT64_SIZE)
+#define LMSG_RESULT          (LMSG_STMT_ID + LINT64_SIZE)
+#define LMSG_ACTION_END      (LMSG_STMT_ID + LINT8_SIZE)
 
 //logic id
 #define LMSG_ACTION_LOGIN     (1)
@@ -120,7 +121,6 @@ struct lmsg_action_head_struct
 {
   uint16_t action_id;
   uint8_t  result;
-  uint16_t info_num;
   uint64_t session_id;
   uint64_t stmt_id;
 };
@@ -211,63 +211,6 @@ public :
     return buffer_ + LMSG_TRANSFER_HEAD_SIZE;
   }
 
-  //接收消息
-  /*lret Recieve(CommPort *port)
-  {
-    int r = port->Recieve(buffer_, buffer_size_);
-
-    if (r <= 0)
-      return LSQL_ERROR;
-
-    if (r > LMSG_MAX_LENGTH)
-      return LSQL_ERROR;
-
-    if (r > buffer_size_)
-    {
-      //TODO:重新分配内存空间，并接收全部数据
-    }
-
-    //TODO:填写接受的信息
-
-    return LSQL_SUCCESS;
-  }
-
-  //发送数据，在WriteMsgBuffer之后
-  lret Send(CommPort *port)
-  {
-    int r = port->Send(buffer_, msg_length_ + LMSG_TRANSFER_HEAD_SIZE);
-    return LSQL_SUCCESS;
-    }*/
 };
-
-/*class NetWriteStream
-{
-public :
-  NetWriteStream(void *buffer)
-  {
-  }
-  ~NetStream()
-  {
-  }
-
-  void Write(uint8_t *data, uint32_t len)
-  {
-  }
-
-  void WriteUint8(uint8_t data)
-  {
-  }
-
-  void WriteUint16(uint16_t data)
-  {
-  }
-
-  //如果初始化时使用的缓冲区空间足够，则返回该缓冲区
-  uint8_t* FinishWriting(uint32_t *len)
-  {
-    return NULL;
-  }
-};
-*/
 
 #endif // LSQL_INCLUDE_LMESSAGE_H_

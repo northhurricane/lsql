@@ -7,7 +7,6 @@ lmsg_login_req_head_write()
   lmsg_action_head_t head;
   head.action_id = LMSG_ACTION_LOGIN;
   head.result = 0;
-  head.info_num = 0;
   head.session_id = 0;
   head.stmt_id = 0;
 }
