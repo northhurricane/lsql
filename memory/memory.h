@@ -1,11 +1,8 @@
 #ifndef LSQL_MEMORY_MEMORY_H_
 #define LSQL_MEMORY_MEMORY_H_
 
-class Memory
-{
-public :
-  virtual void *Allocate(uint32_t size) = 0;
-  virtual void Free(void *p) = 0;
-};
+//编译期使用new和delete报告错误
+#define new
+#define delete
 
 #endif //LSQL_MEMORY_MEMORY_H_

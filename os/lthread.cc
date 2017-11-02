@@ -32,7 +32,7 @@ int lthread_create(lthread_function_t func, void *para, lthread_t *thread)
   pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
 
   int r = 0;
-  //int r = pthread_create (thread, &attr, func, para);
+  r = pthread_create (thread, &attr, func, para);
 
   pthread_attr_destroy (&attr);
 

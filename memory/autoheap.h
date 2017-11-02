@@ -8,7 +8,7 @@ using namespace std;
 
 class HeapBlock;
 
-class AutoHeap : public Memory
+class AutoHeap
 {
 public :
   static AutoHeap* Create();

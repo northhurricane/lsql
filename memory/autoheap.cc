@@ -76,7 +76,7 @@ HeapBlock::HeapBlock()
 
 HeapBlock::~HeapBlock()
 {
-  delete buffer_;
+  lfree(buffer_);
 }
 
 void*
@@ -84,7 +84,7 @@ HeapBlock::InitMemPool(uint32_t size)
 {
   block_size_ = size;
 
-  buffer_ = new char[size];
+  buffer_ = lmalloc(size);
   return buffer_;
 }
 

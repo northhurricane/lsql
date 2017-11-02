@@ -22,7 +22,8 @@ g++ -g -I ../util ../dev_test/testllist.c -o testllist
 //test lsu
 g++ -I ../file/ -I ../engines/ldb/ lsu_test.cc ../engines/ldb/lsu.cc ../file/lfile.cc
 
-
+//lsqld
+g++ -g -I ../lsqld -I ../include ../lsqld/main.cc ../lsqld/lsqld_main.cc ../lsqld/lsqld_comm.cc ../lsqld/LPort.cc ../lsqld/lsqld_socket.cc ../os/lthread.cc -lrt -o lsqld
 
 
 

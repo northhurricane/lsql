@@ -9,7 +9,8 @@
 //#else
 //#endif
 
-typedef int (*lthread_function_t) (void *);
+//typedef int (*lthread_function_t) (void *);
+typedef void *(*lthread_function_t) (void *);
 typedef pthread_t lthread_t;
 
 #define THREAD_SUCCESS (0)
