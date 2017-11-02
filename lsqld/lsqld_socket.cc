@@ -12,23 +12,25 @@
 
 
 static int sockfd;
-/*
 static int epollfd;
 
-static void
-socket_epoll_thrd()
+static void*
+socket_epoll_thrd(void *)
 {
   bool quit = false;
   while (true)
   {
-    nfds = epoll_wait(epollfd, events, MAX_EVENTS, -1);
+    //    nfds = epoll_wait(epollfd, events, MAX_EVENTS, -1);
     //check alive,read data and add to work list
     if (quit)
       break;
   }
 }
 
-*/
+static void
+socket_accept_connection(int sock)
+{
+}
 
 static void*
 socket_listen_thrd(void *)
@@ -46,6 +48,7 @@ socket_listen_thrd(void *)
     if (client_sockfd)
     {
       //create connection object LConn add client socket to epoll
+      socket_accept_connection(client_sockfd);
     }
   }
 }
