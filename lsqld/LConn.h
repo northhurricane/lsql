@@ -4,18 +4,43 @@
 #include <map>
 
 class LSess;
+class LConnManager;
 
 //每于客户端建立连接则创建一个LConn对象
 class LConn
 {
 public :
-  void* GetBuffer(int *buffer_size);
-  void* GetBuffer(int nsize, int *buffer_size);
-private :
-  void *buffer;
-  int size;
+  void* GetBuffer()
+  {
+    return buffer_;
+  }
+  int GetBufferSize()
+  {
+    return size_;
+  }
+  void* GetBuffer(int nsize)
+  {
+    if (size_ > nsize)
+      return buffer_;
 
-  LSess *lsess_;
+    size_ = nsize;
+    return buffer_;
+  }
+  void SetMsgLen(int len)
+  {
+    msg_len_ = len;
+  }
+
+  friend class LConnManager;
+private :
+  void *buffer_;
+  int size_;
+  int msg_len_;
+
+  LSess *sess_;
+
+protected :
+  LConn(int size);
 };
 
 using namespace std;
